@@ -22,7 +22,7 @@ const categories = [
   { name: 'กระเป๋าสตางค์', href: '/wallet', image: categoryWallet },
   { name: 'กระเป๋าเป้', href: '/backpack', image: categoryBackpack },
   { name: 'กระเป๋าคาดอก', href: '/chest-bag', image: categoryChestBag },
-  { name: 'เข็มขัด', href: '/belt', image: categoryEtc },
+  { name: 'เข็มขัด', href: '/belt', image: categoryBelt },
   { name: 'สินค้าจิปาถะ', href: '/etc', image: categoryEtc },
 ];
 
@@ -50,7 +50,7 @@ const pageSchema = {
       
       <div class="shop-grid__container">
         <div class="shop-grid">
-          {categories.map((category) => (
+          {categories.map((category, index) => (
             <div class="category-card">
               <a href={category.href} class="category-card__image-link">
                 <Image 
@@ -59,7 +59,9 @@ const pageSchema = {
                   width="400" 
                   height="400" 
                   format="webp" 
-                  quality={80} 
+                  quality={80}
+                  loading={index < 4 ? 'eager' : 'lazy'} /* แก้ไข: 4 รูปแรกโหลดทันที */
+                  decoding="async"
                 />
               </a>
               <h2 class="category-card__name">{category.name}</h2>

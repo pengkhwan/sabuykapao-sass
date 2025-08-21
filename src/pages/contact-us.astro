@@ -12,6 +12,9 @@ const pageSchema = {
     "description": "ติดต่อ SabuyKapao เพื่อสอบถามข้อมูล สั่งทำสินค้า หรือเยี่ยมชมร้านของเราที่ดำเนินสะดวก ราชบุรี เราพร้อมให้บริการเครื่องหนังแฮนด์เมดคุณภาพ",
     "url": new URL(Astro.url.pathname, Astro.site).href,
 };
+
+// --- พิกัดร้าน ---
+const coordinates = "13.57375628272967,99.97051673787385";
 ---
 
 <Layout 
@@ -56,7 +59,7 @@ const pageSchema = {
             337/2 หมู่ 4 ต.ดอนกรวย อ.ดำเนินสะดวก จ.ราชบุรี 70130
             <span class="location-note">(ใกล้ตลาดน้ำดำเนินสะดวก)</span>
           </p>
-          <a href="http://googleusercontent.com/maps.google.com/7" target="_blank" rel="noopener noreferrer" class="map-link">
+          <a href={`https://maps.google.com/2{coordinates}`} target="_blank" rel="noopener noreferrer" class="map-link">
             ดูเส้นทางใน Google Map →
           </a>
           <div class="storefront-image">
@@ -68,7 +71,7 @@ const pageSchema = {
     
     <div class="google-map-container">
       <iframe
-        src="http://googleusercontent.com/maps.google.com/8"
+        src={`https://maps.google.com/3{coordinates}&z=15&output=embed`}
         width="100%"
         height="100%"
         style="border:0;"

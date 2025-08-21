@@ -50,7 +50,7 @@ const pageSchema = {
       <h1 class="page-title">บทความน่ารู้</h1>
 
       <div class="content-grid">
-        {mockArticles.map(article => (
+        {mockArticles.map((article, index) => (
           <article class="article-card">
             <a href={article.href} class="article-card__image-link">
               <Image 
@@ -59,7 +59,9 @@ const pageSchema = {
                 width="600" 
                 height="600"
                 format="webp" 
-                quality={80} 
+                quality={80}
+                loading={index < 3 ? 'eager' : 'lazy'} /* แก้ไข: 3 รูปแรกโหลดทันที */
+                decoding="async"
               />
             </a>
             <div class="article-card__content">
