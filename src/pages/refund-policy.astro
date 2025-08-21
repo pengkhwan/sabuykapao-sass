@@ -1,13 +1,25 @@
 ---
 // src/pages/refund-policy.astro
 import Layout from '../layouts/Layout.astro';
-import '../styles/pages/_legal.scss'; // ใช้ไฟล์สไตล์สำหรับหน้ากฎหมายเดียวกัน
+import '../styles/pages/_legal.scss';
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "นโยบายการคืนเงินและรับประกันสินค้า - Sabuykapao",
+    "description": "นโยบายและเงื่อนไขการคืนเงิน การเปลี่ยนสินค้า และการรับประกันคุณภาพสินค้าของ Sabuykapao",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="นโยบายการคืนเงินและรับประกันสินค้า - Sabuykapao"
   description="นโยบายและเงื่อนไขการคืนเงิน การเปลี่ยนสินค้า และการรับประกันคุณภาพสินค้าของ Sabuykapao"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="legal-page">
     <div class="container">
       <h1>นโยบายการคืนเงินและรับประกันสินค้า</h1>

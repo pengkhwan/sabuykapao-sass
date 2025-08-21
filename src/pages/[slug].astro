@@ -8,23 +8,15 @@ import ProductGallery from '../components/ProductGallery.svelte';
 import PurchaseBox from '../components/PurchaseBox.astro';
 import ProductSchema from '../components/ProductSchema.astro';
 
-// --- แก้ไข getStaticPaths ---
 export async function getStaticPaths() {
-  // แก้ไข Query: เพิ่ม `&& defined(slug.current)` เพื่อกรองเอาเฉพาะที่มี slug
-  const query = `*[_type == "product" && defined(slug.current)][].slug.current`;
+  // แก้ไข: ดึง slug จาก product, article, และ portfolio
+  const query = `*[_type in ["product", "article", "portfolio"] && defined(slug.current)][].slug.current`;
   const slugs = await client.fetch(query);
-
-  return slugs.map((slug) => {
-    return {
-      params: { slug: slug },
-    };
-  });
+  return slugs.map((slug) => ({ params: { slug } }));
 }
-// -----------------------------
 
-const { slug } = Astro.params;
+const { slug } = Astro.props;
 
-// Query ข้อมูลของสินค้าชิ้นเดียวโดยใช้ slug ที่ได้รับมา
 const query = `*[_type == "product" && slug.current == $slug][0]{
   ...,
   "mainImageUrl": image.asset->url,
@@ -46,7 +38,7 @@ if (!product) return Astro.redirect('/404');
   <Fragment slot="head">
     <ProductSchema product={product} />
   </Fragment>
-  
+
   <main class="slug-page">
     <div class="container">
       <nav class="breadcrumbs">

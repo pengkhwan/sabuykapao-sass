@@ -4,20 +4,37 @@ import Layout from '../../layouts/Layout.astro';
 import '../../styles/pages/_portfolio.scss';
 import { client } from '../../sanity.js';
 
+// แก้ไข Query: เพิ่ม "alt": mainImage.alt สำหรับรูปใน gallery ด้วย
 const query = `*[_type == "portfolio"] | order(_createdAt desc) {
   title,
   description,
   "imageUrl": mainImage.asset->url,
-  "alt": mainImage.alt 
+  "alt": mainImage.alt,
+  "gallery": gallery[]{
+    "url": asset->url,
+    "alt": alt
+  }
 }`;
 
 const portfolioItems = await client.fetch(query);
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "รับทำของชำร่วยเครื่องหนัง ของที่ระลึกพรีเมียม สลักชื่อได้ | sabuykapao",
+    "description": "รับสั่งทำของชำร่วยเครื่องหนัง ของที่ระลึกเกรดพรีเมียมสำหรับทุกโอกาสสำคัญ ทั้งงานแต่ง งานเกษียณ งานบวช ออกแบบและสลักชื่อ/โลโก้ได้ในราคาโรงงาน",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="รับทำของชำร่วยเครื่องหนัง ของที่ระลึกพรีเมียม สลักชื่อได้ | sabuykapao"
   description="รับสั่งทำของชำร่วยเครื่องหนัง ของที่ระลึกเกรดพรีเมียมสำหรับทุกโอกาสสำคัญ ทั้งงานแต่ง งานเกษียณ งานบวช ออกแบบและสลักชื่อ/โลโก้ได้ในราคาโรงงาน"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="portfolio-page">
     <div class="container">
       <div class="page-header">
@@ -43,7 +60,7 @@ const portfolioItems = await client.fetch(query);
                   />
                 )}
               </div>
-              <h3 class="portfolio-card__name">{item.title}</h3>
+              <h2 class="portfolio-card__name">{item.title}</h2>
               {item.description && <p class="portfolio-card__description">{item.description}</p>}
             </div>
           ))}

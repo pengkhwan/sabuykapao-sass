@@ -104,10 +104,9 @@
     }
     img {
       width: 100%;
-      height: 100%; /* แก้ไข */
       border-radius: 12px;
-      aspect-ratio: 4 / 3; /* เพิ่ม: บังคับสัดส่วนแนวนอน */
-      object-fit: cover; /* เพิ่ม: ทำให้รูปเต็มกรอบโดยไม่เสียสัดส่วน */
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
     }
   }
 

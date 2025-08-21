@@ -46,6 +46,8 @@ const pageSchema = {
   <main class="shop-page">
     <div class="container">
       <h1 class="page-title">สินค้า</h1>
+      <p class="page-intro">เลือกชมสินค้าเครื่องหนังแฮนด์เมดคุณภาพหลากหลายประเภทที่เหมาะกับทุกไลฟ์สไตล์ของคุณ</p>
+      
       <div class="shop-grid__container">
         <div class="shop-grid">
           {categories.map((category) => (
@@ -60,7 +62,7 @@ const pageSchema = {
                   quality={80} 
                 />
               </a>
-              <h3 class="category-card__name">{category.name}</h3>
+              <h2 class="category-card__name">{category.name}</h2>
             </div>
           ))}
         </div>

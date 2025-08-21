@@ -49,6 +49,15 @@ export default {
       options: {
         hotspot: true,
       },
+      // แก้ไข: เพิ่ม alt field
+      fields: [
+        {
+          name: 'alt',
+          title: 'Alternative text',
+          type: 'string',
+          description: 'คำอธิบายรูปภาพสำหรับโซเชียลมีเดีย',
+        }
+      ]
     },
     {
       name: 'canonicalUrl',

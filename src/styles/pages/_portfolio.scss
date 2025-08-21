@@ -114,9 +114,9 @@
   }
 
   .contact-button {
-    display: inline-flex; /* แก้ไข: เปลี่ยนเป็น inline-flex */
-    align-items: center; /* เพิ่ม: จัดไอคอนให้อยู่กลาง */
-    gap: 0.5rem; /* เพิ่ม: ระยะห่างระหว่างไอคอนกับข้อความ */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.8rem 2rem;
     border-radius: 8px;
     color: #fff;

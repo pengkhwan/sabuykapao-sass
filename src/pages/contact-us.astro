@@ -4,12 +4,24 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import '../styles/pages/_contact.scss';
 import storefrontImage from '../assets/images/contact/contact-storefront.webp';
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "ติดต่อเรา - SabuyKapao",
+    "description": "ติดต่อ SabuyKapao เพื่อสอบถามข้อมูล สั่งทำสินค้า หรือเยี่ยมชมร้านของเราที่ดำเนินสะดวก ราชบุรี เราพร้อมให้บริการเครื่องหนังแฮนด์เมดคุณภาพ",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="ติดต่อเรา - SabuyKapao"
   description="ติดต่อ SabuyKapao เพื่อสอบถามข้อมูล สั่งทำสินค้า หรือเยี่ยมชมร้านของเราที่ดำเนินสะดวก ราชบุรี เราพร้อมให้บริการเครื่องหนังแฮนด์เมดคุณภาพ"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="contact-page">
     <div class="container">
       <div class="page-header">
@@ -20,7 +32,7 @@ import storefrontImage from '../assets/images/contact/contact-storefront.webp';
       <div class="contact-grid">
         <div class="contact-info">
           <div class="contact-block">
-            <h3>ช่องทางการติดต่อ</h3>
+            <h2>ช่องทางการติดต่อ</h2>
             <ul>
               <li><strong>เว็บไซต์:</strong> <a href="https://sabuykapao.com">sabuykapao.com</a></li>
               <li><strong>Facebook:</strong> <a href="https://www.facebook.com/marah5g" target="_blank" rel="noopener noreferrer">marah5g</a></li>
@@ -30,7 +42,7 @@ import storefrontImage from '../assets/images/contact/contact-storefront.webp';
           </div>
 
           <div class="contact-block">
-            <h3>เวลาทำการ</h3>
+            <h2>เวลาทำการ</h2>
             <ul>
               <li><strong>จันทร์ - เสาร์:</strong> 8:00 – 17:00</li>
               <li><strong>วันอาทิตย์:</strong> 8:00 – 11:00</li>
@@ -39,12 +51,12 @@ import storefrontImage from '../assets/images/contact/contact-storefront.webp';
         </div>
 
         <div class="contact-location">
-          <h3>ที่อยู่ร้าน</h3>
+          <h2>ที่อยู่ร้าน</h2>
           <p>
             337/2 หมู่ 4 ต.ดอนกรวย อ.ดำเนินสะดวก จ.ราชบุรี 70130
             <span class="location-note">(ใกล้ตลาดน้ำดำเนินสะดวก)</span>
           </p>
-          <a href="https://www.google.com/maps/search/?api=1&query=13.57375628272967,99.97051673787385" target="_blank" rel="noopener noreferrer" class="map-link">
+          <a href="http://googleusercontent.com/maps.google.com/7" target="_blank" rel="noopener noreferrer" class="map-link">
             ดูเส้นทางใน Google Map →
           </a>
           <div class="storefront-image">
@@ -56,7 +68,7 @@ import storefrontImage from '../assets/images/contact/contact-storefront.webp';
     
     <div class="google-map-container">
       <iframe
-        src="https://maps.google.com/maps?q=13.57375628272967,99.97051673787385&t=&z=16&ie=UTF8&iwloc=&output=embed"
+        src="http://googleusercontent.com/maps.google.com/8"
         width="100%"
         height="100%"
         style="border:0;"

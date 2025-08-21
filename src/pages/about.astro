@@ -27,14 +27,25 @@ const philosophyItems = [
         text: "เราเชื่อว่าคุณค่าของงานแฮนด์เมดคือความใส่ใจ เราจึงดูแลทุกขั้นตอนการผลิตด้วยตัวเอง"
     }
 ];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "เกี่ยวกับเรา - SabuyKapao",
+    "description": "เรื่องราวและปรัชญาของ SabuyKapao เรามุ่งมั่นสร้างสรรค์เครื่องหนังแท้แฮนด์เมดคุณภาพสูง ที่สะท้อนตัวตนและคงความงดงามเหนือกาลเวลา",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="เกี่ยวกับเรา - SabuyKapao"
   description="เรื่องราวและปรัชญาของ SabuyKapao เรามุ่งมั่นสร้างสรรค์เครื่องหนังแท้แฮนด์เมดคุณภาพสูง ที่สะท้อนตัวตนและคงความงดงามเหนือกาลเวลา"
 >
-  <main class="about-page">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
 
+  <main class="about-page">
     <section class="about-hero">
       <div class="container about-hero__grid">
         <div class="about-hero__image">
@@ -95,6 +106,5 @@ const philosophyItems = [
         </div>
       </div>
     </section>
-
   </main>
 </Layout>

@@ -27,12 +27,24 @@ const mockArticles = [
   { title: 'ทำไมหนังแท้จึงมีราคาแพงกว่าหนังเทียม', excerpt: 'ค้นพบความแตกต่างระหว่างหนังแท้และหนังเทียม ทั้งในด้านคุณภาพและความทนทาน...', image: articleImage8, href: '#' },
   { title: 'กระเป๋า Coach: ทางเลือกที่คุ้มค่ากว่า', excerpt: 'เปรียบเทียบความคุ้มค่าของกระเป๋า Coach กับแบรนด์เนมอื่นๆ ในตลาด...', image: articleImage9, href: '#' },
 ];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "บทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้ | SabuyKapao",
+    "description": "แหล่งรวมบทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้จาก SabuyKapao อ่านเคล็ดลับการดูแลรักษา, เรื่องราวเบื้องหลังงานแฮนด์เมด, และไอเดียการเลือกซื้อสินค้าหนัง",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="บทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้ | SabuyKapao"
   description="แหล่งรวมบทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้จาก SabuyKapao อ่านเคล็ดลับการดูแลรักษา, เรื่องราวเบื้องหลังงานแฮนด์เมด, และไอเดียการเลือกซื้อสินค้าหนัง"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="content-page">
     <div class="container">
       <h1 class="page-title">บทความน่ารู้</h1>
@@ -51,9 +63,9 @@ const mockArticles = [
               />
             </a>
             <div class="article-card__content">
-              <h3 class="article-card__title">
+              <h2 class="article-card__title">
                 <a href={article.href}>{article.title}</a>
-              </h3>
+              </h2>
               <p class="article-card__excerpt">{article.excerpt}</p>
             </div>
           </article>

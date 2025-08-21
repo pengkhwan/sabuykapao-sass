@@ -1,13 +1,25 @@
 ---
 // src/pages/terms-and-conditions.astro
 import Layout from '../layouts/Layout.astro';
-import '../styles/pages/_legal.scss'; // ใช้ไฟล์สไตล์สำหรับหน้ากฎหมายโดยเฉพาะ
+import '../styles/pages/_legal.scss';
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "ข้อตกลงและเงื่อนไขการใช้บริการ - Sabuykapao",
+    "description": "ข้อตกลงและเงื่อนไขการใช้บริการเว็บไซต์ แอปพลิเคชัน และช่องทางการให้บริการอื่นใดของ Sabuykapao",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="ข้อตกลงและเงื่อนไขการใช้บริการ - Sabuykapao"
   description="ข้อตกลงและเงื่อนไขการใช้บริการเว็บไซต์ แอปพลิเคชัน และช่องทางการให้บริการอื่นใดของ Sabuykapao"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="legal-page">
     <div class="container">
       <h1>ข้อตกลงและเงื่อนไขการใช้บริการ</h1>

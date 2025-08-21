@@ -1,13 +1,25 @@
 ---
 // src/pages/privacy-policy.astro
 import Layout from '../layouts/Layout.astro';
-import '../styles/pages/_legal.scss'; // ใช้ไฟล์สไตล์สำหรับหน้ากฎหมายเดียวกัน
+import '../styles/pages/_legal.scss';
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "นโยบายความเป็นส่วนตัว - Sabuykapao",
+    "description": "นโยบายความเป็นส่วนตัวของ Sabuykapao เรามุ่งมั่นที่จะปกป้องข้อมูลส่วนบุคคลของคุณ",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
 <Layout 
   title="นโยบายความเป็นส่วนตัว - Sabuykapao"
   description="นโยบายความเป็นส่วนตัวของ Sabuykapao เรามุ่งมั่นที่จะปกป้องข้อมูลส่วนบุคคลของคุณ"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
   <main class="legal-page">
     <div class="container">
       <h1>นโยบายความเป็นส่วนตัว</h1>
