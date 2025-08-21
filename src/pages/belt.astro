@@ -1,0 +1,84 @@
+---
+// src/pages/belt.astro
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+// --- Import รูปภาพสินค้า (ข้อมูลจำลอง) ---
+import p1 from '../assets/images/products/product-belt-1.webp';
+import p2 from '../assets/images/products/product-belt-2.webp';
+import p3 from '../assets/images/products/product-belt-3.webp';
+import p4 from '../assets/images/products/product-belt-4.webp';
+import p5 from '../assets/images/products/product-belt-5.webp';
+import p6 from '../assets/images/products/product-belt-6.webp';
+import p7 from '../assets/images/products/product-belt-7.webp';
+import p8 from '../assets/images/products/product-belt-8.webp';
+import p9 from '../assets/images/products/product-belt-9.webp';
+
+// --- ข้อมูลสินค้าจำลอง 9 ชิ้น ---
+const mockProducts = [
+  { name: 'เข็มขัดหนังวัวแท้ หัวเข็มขัดคลาสสิก', price: 890, image: p1, href: '#' },
+  { name: 'เข็มขัดหนังฟอกฝาด', price: 990, image: p2, href: '#' },
+  { name: 'เข็มขัดหนังสีดำเงา', price: 790, image: p3, href: '#' },
+  { name: 'เข็มขัดหนังสีน้ำตาลเข้ม', price: 790, image: p4, href: '#' },
+  { name: 'เข็มขัดสไตล์วินเทจ', price: 950, image: p5, href: '#' },
+  { name: 'เข็มขัดสำหรับใส่ทำงาน', price: 850, image: p6, href: '#' },
+  { name: 'เข็มขัดหนังแบบถัก', price: 1100, image: p7, href: '#' },
+  { name: 'เข็มขัดสลักชื่อได้', price: 1200, image: p8, href: '#' },
+  { name: 'เข็มขัดหนังกลับ', price: 990, image: p9, href: '#' },
+];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "เข็มขัดหนังแท้สำหรับผู้ชาย | SabuyKapao",
+    "description": "เข็มขัดหนังแท้คุณภาพสูงสำหรับผู้ชาย ดีไซน์เรียบหรู คลาสสิก ทนทาน ใช้งานได้ยาวนาน เหมาะสำหรับทุกโอกาส",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="เข็มขัดหนังแท้สำหรับผู้ชาย | SabuyKapao"
+  description="เข็มขัดหนังแท้คุณภาพสูงสำหรับผู้ชาย ดีไซน์เรียบหรู คลาสสิก ทนทาน ใช้งานได้ยาวนาน เหมาะสำหรับทุกโอกาส"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>เข็มขัดหนัง</h1>
+        <p>เข็มขัดหนังเป็นเครื่องประดับที่ได้รับความนิยมมาอย่างยาวนาน สามารถช่วยเสริมลุคให้ดูสุภาพ เรียบร้อย หรือแม้แต่ดูเท่ห์ ขึ้นอยู่กับสไตล์การแต่งตัวของผู้ที่สวมใส่</p>
+      </div>
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} loading={index < 3 ? 'eager' : 'lazy'} />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      
+      <nav class="pagination">
+        <a href="#" class="pagination__link current">1</a>
+        <a href="#" class="pagination__link">2</a>
+        <a href="#" class="pagination__link">3</a>
+        <a href="#" class="pagination__link next">&rarr;</a>
+      </nav>
+
+      <div class="category-description">
+        <h2>เข็มขัดหนังแท้ เพิ่มความมั่นใจให้ผู้ชาย</h2>
+        <p>เข็มขัดหนังแท้ เปรียบเสมือนเครื่องประดับที่บ่งบอกถึงรสนิยมและสไตล์ เข็มขัดหนังแท้ที่มีคุณภาพดี ย่อมช่วยเสริมสร้างบุคลิกให้ดูดี ภูมิฐาน น่าเชื่อถือ</p>
+        <h2>เข็มขัดหนังแท้ ทนทานใช้งานได้นาน</h2>
+        <p>ด้วยคุณสมบัติของหนังแท้ที่มีความยืดหยุ่น แข็งแรง เข็มขัดหนังแท้จึงสามารถใช้งานได้ทุกโอกาส และยิ่งใช้ยิ่งสวยงาม คุ้มค่าแก่การลงทุน</p>
+      </div>
+    </div>
+  </main>
+</Layout>

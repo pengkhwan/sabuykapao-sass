@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+// --- Import รูปภาพสินค้า (ข้อมูลจำลอง) ---
+import p1 from '../assets/images/products/product-handbag-1.webp';
+import p2 from '../assets/images/products/product-handbag-2.webp';
+import p3 from '../assets/images/products/product-handbag-3.webp';
+import p4 from '../assets/images/products/product-handbag-4.webp';
+import p5 from '../assets/images/products/product-handbag-5.webp';
+import p6 from '../assets/images/products/product-handbag-6.webp';
+import p7 from '../assets/images/products/product-handbag-7.webp';
+import p8 from '../assets/images/products/product-handbag-8.webp';
+import p9 from '../assets/images/products/product-handbag-9.webp';
+
+// --- ข้อมูลสินค้าจำลอง 9 ชิ้น ---
+const mockProducts = [
+  { name: 'กระเป๋าถือหนังวัว รุ่น A', price: 1290, image: p1, href: '#' },
+  { name: 'กระเป๋าถือหนังออยล์ รุ่น B', price: 1550, image: p2, href: '#' },
+  { name: 'กระเป๋าถือทรงคลาสสิก รุ่น C', price: 1400, image: p3, href: '#' },
+  { name: 'กระเป๋าถือวินเทจ รุ่น D', price: 1890, image: p4, href: '#' },
+  { name: 'กระเป๋าถือสไตล์โมเดิร์น รุ่น E', price: 1350, image: p5, href: '#' },
+  { name: 'กระเป๋าถือสำหรับทำงาน รุ่น F', price: 1990, image: p6, href: '#' },
+  { name: 'กระเป๋าถือใบเล็ก รุ่น G', price: 990, image: p7, href: '#' },
+  { name: 'กระเป๋าถือ Tote Bag รุ่น H', price: 2100, image: p8, href: '#' },
+  { name: 'กระเป๋าถือดีไซน์พิเศษ รุ่น I', price: 2500, image: p9, href: '#' },
+];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "กระเป๋าถือหนังแท้ ดีไซน์สวย | SabuyKapao",
+    "description": "เลือกซื้อกระเป๋าถือหนังแท้แฮนด์เมดคุณภาพพรีเมียม ดีไซน์ทันสมัย ตอบโจทย์ทุกการใช้งาน เหมาะสำหรับทุกโอกาส",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="กระเป๋าถือหนังแท้ ดีไซน์สวย | SabuyKapao"
+  description="เลือกซื้อกระเป๋าถือหนังแท้แฮนด์เมดคุณภาพพรีเมียม ดีไซน์ทันสมัย ตอบโจทย์ทุกการใช้งาน เหมาะสำหรับทุกโอกาส"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>กระเป๋าถือ</h1>
+        <p>พบกับคอลเล็กชั่นกระเป๋าถือหนังแท้ 100% ดีไซน์ล้ำสมัย หลากสไตล์ หลายราคา เหมาะสำหรับทุกไลฟ์สไตล์</p>
+      </div>
+
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} loading={index < 3 ? 'eager' : 'lazy'} />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      
+      <nav class="pagination">
+        <a href="#" class="pagination__link current">1</a>
+        <a href="#" class="pagination__link">2</a>
+        <a href="#" class="pagination__link">3</a>
+        <a href="#" class="pagination__link next">&rarr;</a>
+      </nav>
+
+      <div class="category-description">
+        <h2>เคล็ด(ไม่)ลับ เลือกซื้อกระเป๋าถือให้ชิคตามสไตล์</h2>
+        <p>กระเป๋าถือเป็นไอเท็มสำคัญที่ช่วยเสริมลุคให้ดูดีมีสไตล์ แต่การเลือกซื้อกระเป๋าถือให้ตรงใจนั้นไม่ใช่เรื่องง่าย เรามีทริคเล็ก ๆ มาช่วยในการตัดสินใจ</p>
+        
+        <h2>วัสดุที่นิยมใช้ทำกระเป๋าถือผู้หญิง</h2>
+        <p>สิ่งสำคัญที่ควรพิจารณาคือวัสดุที่ใช้ทำกระเป๋า เพราะวัสดุแต่ละชนิดก็มีคุณสมบัติที่แตกต่างกันไป หนังแท้ (Leather) เป็นวัสดุธรรมชาติที่มีลักษณะหรูหรา ทนทาน และมีอายุการใช้งานยาวนาน</p>
+      </div>
+    </div>
+  </main>
+</Layout>

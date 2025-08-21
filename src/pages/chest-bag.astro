@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+import p1 from '../assets/images/products/product-chest-bag-1.webp';
+import p2 from '../assets/images/products/product-chest-bag-2.webp';
+import p3 from '../assets/images/products/product-chest-bag-3.webp';
+import p4 from '../assets/images/products/product-chest-bag-4.webp';
+import p5 from '../assets/images/products/product-chest-bag-5.webp';
+import p6 from '../assets/images/products/product-chest-bag-6.webp';
+import p7 from '../assets/images/products/product-chest-bag-7.webp';
+import p8 from '../assets/images/products/product-chest-bag-8.webp';
+import p9 from '../assets/images/products/product-chest-bag-9.webp';
+
+const mockProducts = [
+  { name: 'กระเป๋าคาดอกหนังแท้ รุ่น Urban', price: 1190, image: p1, href: '#' },
+  { name: 'กระเป๋าคาดอก/คาดเอว 2-in-1', price: 1390, image: p2, href: '#' },
+  { name: 'กระเป๋าคาดอกสไตล์สปอร์ต', price: 990, image: p3, href: '#' },
+  { name: 'กระเป๋าคาดอกขนาดกะทัดรัด', price: 890, image: p4, href: '#' },
+  { name: 'กระเป๋าคาดอกหนังฟอกฝาด', price: 1490, image: p5, href: '#' },
+  { name: 'กระเป๋าคาดอกสีดำ', price: 1190, image: p6, href: '#' },
+  { name: 'กระเป๋าคาดอกสีน้ำตาล', price: 1190, image: p7, href: '#' },
+  { name: 'กระเป๋าคาดอก Unisex', price: 1250, image: p8, href: '#' },
+  { name: 'กระเป๋าคาดอกสั่งทำ', price: 1600, image: p9, href: '#' },
+];
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "กระเป๋าคาดอกหนังแท้ | SabuyKapao",
+    "description": "กระเป๋าคาดอกหนังแท้คุณภาพดี ราคาย่อมเยา ใช้ได้ทั้งผู้ชายและผู้หญิง น้ำหนักเบา ใส่ของได้หลากหลาย ผลิตจากหนังวัวแท้",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="กระเป๋าคาดอกหนังแท้ | SabuyKapao"
+  description="กระเป๋าคาดอกหนังแท้คุณภาพดี ราคาย่อมเยา ใช้ได้ทั้งผู้ชายและผู้หญิง น้ำหนักเบา ใส่ของได้หลากหลาย ผลิตจากหนังวัวแท้"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>กระเป๋าคาดอกหนัง</h1>
+        <p>กระเป๋าคาดอกหนังแท้จากร้านของเราเป็นกระเป๋าที่คุ้มค่าคุ้มราคา เหมาะสำหรับผู้ที่กำลังมองหากระเป๋าคาดอกคุณภาพดีในราคาย่อมเยา สามารถใช้ได้ทั้งผู้ชายและผู้หญิง</p>
+      </div>
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} loading={index < 3 ? 'eager' : 'lazy'} />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <nav class="pagination">
+        <a href="#" class="pagination__link current">1</a>
+        <a href="#" class="pagination__link">2</a>
+        <a href="#" class="pagination__link">3</a>
+        <a href="#" class="pagination__link next">&rarr;</a>
+      </nav>
+
+      <div class="category-description">
+        <h2>กระเป๋าคาดอกสุดฮิตที่ไม่ควรพลาด!</h2>
+        <p>กระเป๋าคาดอกมีหลากหลายแบบให้เลือกสรร ไม่ว่าจะเป็นแบบเรียบหรู แบบสปอร์ต หรือแบบแฟชั่น ซึ่งสามารถตอบโจทย์ความต้องการของผู้ใช้งานได้ทุกสไตล์</p>
+        <h2>ข้อควรพิจารณาในการเลือกซื้อกระเป๋าคาดอก</h2>
+        <p>ควรพิจารณาจากปัจจัยต่างๆ เช่น ขนาดและน้ำหนัก, วัสดุ, และดีไซน์ เพื่อให้ได้กระเป๋าที่ตรงกับความต้องการและสไตล์ของเรามากที่สุด</p>
+      </div>
+    </div>
+  </main>
+</Layout>

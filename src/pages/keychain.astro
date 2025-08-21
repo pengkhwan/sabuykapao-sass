@@ -1,0 +1,97 @@
+---
+// src/pages/keychain.astro
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+// --- Import รูปภาพสินค้า (ข้อมูลจำลอง) ---
+import p1 from '../assets/images/products/product-keychain-1.webp';
+import p2 from '../assets/images/products/product-keychain-2.webp';
+import p3 from '../assets/images/products/product-keychain-3.webp';
+import p4 from '../assets/images/products/product-keychain-4.webp';
+import p5 from '../assets/images/products/product-keychain-5.webp';
+import p6 from '../assets/images/products/product-keychain-6.webp';
+import p7 from '../assets/images/products/product-keychain-7.webp';
+import p8 from '../assets/images/products/product-keychain-8.webp';
+import p9 from '../assets/images/products/product-keychain-9.webp';
+
+// --- ข้อมูลสินค้าจำลอง ---
+const mockProducts = [
+  { name: 'พวงกุญแจหนังรูปผึ้งน้อย', price: 99, image: p1, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังรูปสุนัข', price: 99, image: p2, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังปั๊มชื่อ', price: 120, image: p3, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังเชอร์รี่', price: 89, image: p4, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังเต่าทอง', price: 99, image: p5, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังปลาวาฬ', price: 99, image: p6, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังฟักทอง', price: 89, image: p7, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังไอศกรีม', price: 89, image: p8, href: '/leaf-leather-keychain' },
+  { name: 'พวงกุญแจหนังใบเมเปิ้ล', price: 99, image: p9, href: '/leaf-leather-keychain' },
+];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "พวงกุญแจหนังแท้ ของขวัญพรีเมียม | SabuyKapao",
+    "description": "เลือกซื้อพวงกุญแจหนังแท้ 100% ดีไซน์หลากหลาย เหมาะสำหรับเป็นของขวัญและของที่ระลึก สั่งทำและสลักชื่อได้ ส่งฟรีทั่วประเทศ",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="พวงกุญแจหนังแท้ ของขวัญพรีเมียม | SabuyKapao"
+  description="เลือกซื้อพวงกุญแจหนังแท้ 100% ดีไซน์หลากหลาย เหมาะสำหรับเป็นของขวัญและของที่ระลึก สั่งทำและสลักชื่อได้ ส่งฟรีทั่วประเทศ"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>พวงกุญแจหนัง</h1>
+        <p>
+          พบกับคอลเล็กชั่นพวงกุญแจหนังแท้ 100% ดีไซน์ล้ำสมัย หลากสไตล์ หลายราคา เหมาะสำหรับทุกไลฟ์สไตล์ เลือกซื้อพวงกุญแจหนัง ของขวัญสุดพิเศษสำหรับคนพิเศษของคุณได้ที่นี่ สะดวก รวดเร็ว ส่งฟรีทั่วประเทศ
+        </p>
+      </div>
+
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image 
+                  src={product.image} 
+                  alt={product.name} 
+                  width="600" 
+                  height="600" 
+                  format="webp" 
+                  quality={80}
+                  loading={index < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <nav class="pagination">
+        <a href="#" class="pagination__link current">1</a>
+        <a href="#" class="pagination__link">2</a>
+        <a href="#" class="pagination__link">3</a>
+        <a href="#" class="pagination__link next">&rarr;</a>
+      </nav>
+
+      <div class="category-description">
+        <h2>พวงกุญแจรถยนต์และปลอกหุ้ม ไอเทมเสริมความเท่ห์ให้รถของคุณ</h2>
+        <p>พวงกุญแจรถยนต์และปลอกหุ้ม เป็นอีกหนึ่งไอเทมเสริมที่ได้รับความนิยมอย่างมากในปัจจุบัน โดยเฉพาะในกลุ่มคนที่มีรถยนต์ส่วนตัว เพราะนอกจากจะช่วยเพิ่มความโดดเด่นให้กับกุญแจรถแล้ว ยังช่วยปกป้องกุญแจรถของคุณให้ดูใหม่อยู่เสมออีกด้วย</p>
+        
+        <h2>พวงกุญแจเหมาะสำหรับเป็นของที่ระลึก</h2>
+        <p>พวงกุญแจมีความหลากหลายทั้งในดีไซน์และรูปแบบ ซึ่งทำให้คุณสามารถเลือกสรรได้ตามความต้องการหรือแม้กระทั่งสไตล์ของผู้รับของ มีหลายรูปแบบเช่น หัวใจที่แสดงถึงความรัก, ดอกไม้ที่สะท้อนความงาม, หรือสัตว์เลี้ยงที่เป็นเพื่อนช่วยในชีวิตประจำวัน</p>
+      </div>
+    </div>
+  </main>
+</Layout>

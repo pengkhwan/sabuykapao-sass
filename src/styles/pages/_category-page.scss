@@ -1,0 +1,132 @@
+// src/styles/pages/_category-page.scss
+@use '../variables' as var;
+@use 'sass:color';
+
+.category-page {
+  padding: 4rem 0;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+//--- Header Section ---
+.category-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 75ch;
+  margin-left: auto;
+  margin-right: auto;
+  h1 {
+    margin-bottom: 1rem;
+  }
+  p {
+    line-height: 1.7;
+    font-size: 1.1rem;
+    color: color.scale(var.$clr-text-body, $lightness: 20%);
+  }
+}
+
+//--- Product Grid ---
+/* เพิ่ม: สไตล์สำหรับ container กรอบใหญ่ */
+.product-grid-container {
+  background-color: #F5F4F2;
+  border-radius: 12px;
+  padding: 2rem;
+
+  @media (min-width: 768px) {
+    padding: 3rem;
+  }
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem 1.5rem;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.product-card {
+  text-decoration: none;
+  color: var.$clr-text-body;
+
+  &__image-wrapper {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var.$clr-bg-secondary;
+    margin-bottom: 1rem;
+    /* แก้ไข: ลบ background-color, padding, border-radius ออก */
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      /* แก้ไข: ลบ border-radius ออก */
+    }
+  }
+
+  &:hover &__image-wrapper img {
+    transform: scale(1.05);
+  }
+
+  &__info {
+    text-align: center;
+  }
+
+  &__name {
+    color: var.$clr-text-heading;
+    font-size: 1.1rem;
+  }
+
+  &__price {
+    margin-top: 0.25rem;
+    color: var.$clr-accent;
+    font-weight: 700;
+  }
+}
+
+//--- Pagination ---
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 4rem 0;
+}
+.pagination__link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var.$clr-bg-secondary;
+  font-family: var.$font-heading;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  &:hover { background-color: var.$clr-accent; color: #fff; }
+  &.current { background-color: var.$clr-text-heading; color: #fff; }
+}
+
+//--- Category Description Section ---
+.category-description {
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var.$clr-bg-secondary;
+  max-width: 80ch;
+  margin-left: auto;
+  margin-right: auto;
+
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+  p {
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+}

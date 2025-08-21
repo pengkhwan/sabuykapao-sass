@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+// --- รูปภาพและสินค้าสำหรับหน้านี้เป็นข้อมูลจำลอง ---
+import p1 from '../assets/images/products/product-shoulder-bag-1.webp';
+import p2 from '../assets/images/products/product-shoulder-bag-2.webp';
+import p3 from '../assets/images/products/product-shoulder-bag-3.webp';
+import p4 from '../assets/images/products/product-shoulder-bag-4.webp';
+import p5 from '../assets/images/products/product-shoulder-bag-5.webp';
+import p6 from '../assets/images/products/product-shoulder-bag-6.webp';
+import p7 from '../assets/images/products/product-shoulder-bag-7.webp';
+import p8 from '../assets/images/products/product-shoulder-bag-8.webp';
+import p9 from '../assets/images/products/product-shoulder-bag-9.webp';
+
+const mockProducts = [
+  { name: 'กระเป๋าสะพายข้างหนังออยล์', price: 1590, image: p1, href: '#' },
+  { name: 'กระเป๋าสะพายหนังวัวแท้ รุ่นวินเทจ', price: 1890, image: p2, href: '#' },
+  { name: 'กระเป๋าสะพายใบเล็กสไตล์มินิมอล', price: 1290, image: p3, href: '#' },
+  { name: 'กระเป๋าสะพายทรง Messenger', price: 2200, image: p4, href: '#' },
+  { name: 'กระเป๋าสะพายสีดำคลาสสิก', price: 1690, image: p5, href: '#' },
+  { name: 'กระเป๋าสะพายข้างผู้หญิง', price: 1450, image: p6, href: '#' },
+  { name: 'กระเป๋าสะพายสำหรับเดินทาง', price: 2500, image: p7, href: '#' },
+  { name: 'กระเป๋าสะพายหนังฟอกฝาด', price: 2300, image: p8, href: '#' },
+  { name: 'กระเป๋าสะพายสั่งทำพิเศษ', price: 2800, image: p9, href: '#' },
+];
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "กระเป๋าสะพายข้างหนังแท้ | SabuyKapao",
+    "description": "กระเป๋าสะพายข้างหนังแท้คุณภาพสูง ตอบโจทย์ทุกการใช้งาน ดีไซน์ทันสมัย มีทั้งแนวน่ารัก แนวแฟชั่น และแบบวินเทจ",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="กระเป๋าสะพายข้างหนังแท้ | SabuyKapao"
+  description="กระเป๋าสะพายข้างหนังแท้คุณภาพสูง ตอบโจทย์ทุกการใช้งาน ดีไซน์ทันสมัย มีทั้งแนวน่ารัก แนวแฟชั่น และแบบวินเทจ"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>กระเป๋าสะพายข้างหนัง</h1>
+        <p>กระเป๋าสะพายข้างหนังแท้คุณภาพสูง ตอบโจทย์ทุกการใช้งาน ดีไซน์ทันสมัย มีทั้งแนวน่ารัก แนวแฟชั่น และแบบวินเทจ ผลิตจากหนังวัวแท้ ทนทาน ใช้งานได้ยาวนาน เหมาะสำหรับทั้งใส่ทำงานและใส่เที่ยว</p>
+      </div>
+
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} loading={index < 3 ? 'eager' : 'lazy'} />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      
+      <nav class="pagination">
+        <a href="#" class="pagination__link current">1</a>
+        <a href="#" class="pagination__link">2</a>
+        <a href="#" class="pagination__link">3</a>
+        <a href="#" class="pagination__link next">&rarr;</a>
+      </nav>
+
+      <div class="category-description">
+        <h2>กระเป๋าสะพายข้าง ไอเท็มสุดฮิตที่ต้องมีติดตัว</h2>
+        <p>กระเป๋าสะพายข้างเป็นไอเท็มยอดนิยมที่ผู้หญิงทุกคนต้องมีติดตัว เพราะตอบโจทย์การใช้งานได้อย่างครบครัน ทั้งใส่ของได้เยอะ ใช้งานสะดวก คล่องตัว และเข้ากับทุกสไตล์การแต่งตัว</p>
+        
+        <h2>เหตุผลที่ควรมีกระเป๋าผ้าสะพายข้าง ติดบ้านไว้</h2>
+        <p>กระเป๋าผ้าสะพายข้างได้รับความนิยมอย่างมากในปัจจุบัน ด้วยรูปลักษณ์ที่น่ารัก เท่ ใช้งานได้หลากหลาย และราคาไม่แพง นอกจากนี้ยังสามารถนำกลับมาใช้ซ้ำได้หลายครั้ง ช่วยลดปริมาณขยะและลดมลภาวะต่อสิ่งแวดล้อมได้เป็นอย่างดี</p>
+      </div>
+    </div>
+  </main>
+</Layout>

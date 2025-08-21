@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_category-page.scss';
+
+// --- Import รูปภาพสินค้า (ข้อมูลจำลอง) ---
+import p1 from '../assets/images/products/product-wallet-1.webp';
+import p2 from '../assets/images/products/product-wallet-2.webp';
+import p3 from '../assets/images/products/product-wallet-3.webp';
+import p4 from '../assets/images/products/product-wallet-4.webp';
+import p5 from '../assets/images/products/product-wallet-5.webp';
+import p6 from '../assets/images/products/product-wallet-6.webp';
+import p7 from '../assets/images/products/product-wallet-7.webp';
+import p8 from '../assets/images/products/product-wallet-8.webp';
+import p9 from '../assets/images/products/product-wallet-9.webp';
+
+// --- ข้อมูลสินค้าจำลอง ---
+const mockProducts = [
+  { name: 'กระเป๋าสตางค์หนังวัวแท้ รุ่น Classic', price: 890, image: p1, href: '#' },
+  { name: 'กระเป๋าสตางค์ใบสั้น Minimal', price: 790, image: p2, href: '#' },
+  { name: 'กระเป๋าสตางค์ใบยาวมีซิป', price: 1290, image: p3, href: '#' },
+  { name: 'กระเป๋าสตางค์สลักชื่อได้', price: 950, image: p4, href: '#' },
+  { name: 'กระเป๋าใส่บัตรหนังแท้', price: 490, image: p5, href: '#' },
+  { name: 'กระเป๋าสตางค์สีมงคล', price: 890, image: p6, href: '#' },
+  { name: 'กระเป๋าสตางค์หนังออยล์', price: 990, image: p7, href: '#' },
+  { name: 'กระเป๋าสตางค์ทรง Bifold', price: 850, image: p8, href: '#' },
+  { name: 'ซองใส่บัตรหนังแท้', price: 390, image: p9, href: '#' },
+];
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "กระเป๋าสตางค์หนังแท้ สำหรับชายและหญิง | SabuyKapao",
+    "description": "กระเป๋าสตางค์หนังแท้หลากหลายรูปแบบสำหรับผู้ชายและผู้หญิง ผลิตจากหนังวัวคุณภาพสูง ทนทาน ใช้งานได้นาน ดูมีสไตล์",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+<Layout 
+  title="กระเป๋าสตางค์หนังแท้ สำหรับชายและหญิง | SabuyKapao"
+  description="กระเป๋าสตางค์หนังแท้หลากหลายรูปแบบสำหรับผู้ชายและผู้หญิง ผลิตจากหนังวัวคุณภาพสูง ทนทาน ใช้งานได้นาน ดูมีสไตล์"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="category-page">
+    <div class="container">
+      <div class="category-header">
+        <h1>กระเป๋าสตางค์</h1>
+        <p>กระเป๋าสตางค์หนังของเรามีให้เลือกหลากหลายรูปแบบ ตอบโจทย์ทุกความต้องการของคุณอย่างแน่นอน ทุกชิ้นผลิตจากหนังวัวแท้คุณภาพสูง มั่นใจได้ในความทนทานและสวยงาม</p>
+      </div>
+      <div class="product-grid-container">
+        <div class="product-grid">
+          {mockProducts.map((product, index) => (
+            <a href={product.href} class="product-card">
+              <div class="product-card__image-wrapper">
+                <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} loading={index < 3 ? 'eager' : 'lazy'} />
+              </div>
+              <div class="product-card__info">
+                <h2 class="product-card__name">{product.name}</h2>
+                <p class="product-card__price">{product.price} บาท</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="category-description">
+        <h2>กระเป๋าสตางค์หนังแท้ หลากหลายสไตล์</h2>
+        <p>กระเป๋าสตางค์เป็นไอเท็มที่ขาดไม่ได้สำหรับทุกคน ช่วยให้เราจัดเก็บสิ่งของมีค่าต่างๆ ได้อย่างเป็นระเบียบและปลอดภัย ในปัจจุบันมีกระเป๋าสตางค์ให้เลือกมากมายหลากหลายรูปแบบและวัสดุ</p>
+        <h2>สีกระเป๋าสตางค์เสริมดวง เสริมมงคล เรียกทรัพย์</h2>
+        <p>ความเชื่อเรื่องสีกระเป๋าสตางค์เสริมดวงเป็นสิ่งที่หลายคนให้ความสนใจ การเลือกกระเป๋าสตางค์ที่ดีและถูกโฉลกจะช่วยให้เรารู้สึกมั่นใจและปลอดภัยในการใช้งานทุกวัน</p>
+      </div>
+    </div>
+  </main>
+</Layout>
