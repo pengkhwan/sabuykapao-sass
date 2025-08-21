@@ -1,0 +1,86 @@
+// src/styles/components/_Footer.scss
+@use 'sass:color';
+@use '../variables' as var;
+
+.main-footer {
+  background-color: var.$clr-bg-secondary;
+  padding: 0.5rem;
+  border-top: 1px solid color.scale(var.$clr-bg-secondary, $lightness: -5%);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+}
+
+.footer-column {
+  /* เพิ่ม: สไตล์สำหรับ heading ที่เป็น p */
+  .footer-heading {
+    font-family: var.$font-heading;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    color: var.$clr-text-heading;
+    font-weight: 700;
+  }
+  
+  p {
+    line-height: 1.7;
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  a:hover {
+    color: var.$clr-accent;
+  }
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.5rem;
+  img {
+    height: 24px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.sub-footer {
+  background-color: var.$clr-bg-primary;
+  padding: 1.5rem 2rem;
+  font-size: 0.6rem;
+}
+
+.sub-footer-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}

@@ -1,0 +1,38 @@
+// src/styles/pages/_legal.scss
+@use '../variables' as var;
+@use 'sass:color';
+
+.legal-page {
+  padding: 4rem 0;
+  background-color: #fff;
+
+  .container {
+    max-width: 80ch;
+    margin: 0 auto; /* แก้ไข: เพิ่มบรรทัดนี้เพื่อจัดให้อยู่กึ่งกลาง */
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .last-updated {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: color.scale(var.$clr-text-body, $lightness: 40%);
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var.$clr-bg-secondary;
+  }
+
+  p {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+}

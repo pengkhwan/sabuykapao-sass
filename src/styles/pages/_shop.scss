@@ -1,0 +1,67 @@
+// src/styles/pages/_shop.scss
+@use '../variables' as var;
+
+.shop-page {
+  padding: 4rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  color: var.$clr-text-heading; /* แก้ไข */
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.shop-grid__container {
+  background-color: #F5F4F2;
+  border-radius: 12px;
+  padding: 2rem;
+
+  @media (min-width: 768px) {
+    padding: 3rem;
+  }
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+.category-card {
+  text-align: center;
+
+  &__image-link {
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__name {
+    margin-top: 1rem;
+    font-size: 1.125rem;
+  }
+}

@@ -1,0 +1,118 @@
+---
+// src/pages/[slug].astro
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_slug.scss';
+import { client } from '../sanity.js';
+import { toHTML } from '@portabletext/to-html';
+import ProductGallery from '../components/ProductGallery.svelte';
+import PurchaseBox from '../components/PurchaseBox.astro';
+import ProductSchema from '../components/ProductSchema.astro';
+
+// --- แก้ไข getStaticPaths ---
+export async function getStaticPaths() {
+  // แก้ไข Query: เพิ่ม `&& defined(slug.current)` เพื่อกรองเอาเฉพาะที่มี slug
+  const query = `*[_type == "product" && defined(slug.current)][].slug.current`;
+  const slugs = await client.fetch(query);
+
+  return slugs.map((slug) => {
+    return {
+      params: { slug: slug },
+    };
+  });
+}
+// -----------------------------
+
+const { slug } = Astro.params;
+
+// Query ข้อมูลของสินค้าชิ้นเดียวโดยใช้ slug ที่ได้รับมา
+const query = `*[_type == "product" && slug.current == $slug][0]{
+  ...,
+  "mainImageUrl": image.asset->url,
+  "mainImageAlt": image.alt,
+  "gallery": gallery[]{ _key, "url": asset->url, alt },
+  "categories": categories[]->{ "name": name, "slug": slug.current },
+  "ogImageUrl": seo.ogImage.asset->url
+}`;
+const product = await client.fetch(query, { slug });
+
+if (!product) return Astro.redirect('/404');
+---
+<Layout 
+  title={product.seo?.seoTitle || product.name}
+  description={product.seo?.seoDescription || product.shortDescription}
+  ogImage={product.ogImageUrl || product.mainImageUrl}
+  astroSite={Astro.site}
+>
+  <Fragment slot="head">
+    <ProductSchema product={product} />
+  </Fragment>
+  
+  <main class="slug-page">
+    <div class="container">
+      <nav class="breadcrumbs">
+        <a href="/">หน้าแรก</a>
+        <span>/</span>
+        {product.categories?.[0] &&
+          <a href={`/shop/${product.categories[0].slug}`}>{product.categories[0].name}</a>
+        }
+      </nav>
+
+      <div class="product-layout-grid">
+        <div class="product-col-gallery">
+          <ProductGallery client:load mainImage={{ url: product.mainImageUrl, alt: product.mainImageAlt || product.name }} galleryImages={product.gallery} />
+        </div>
+        <div class="product-col-info">
+          <h1>{product.name}</h1>
+          <div class="category-tags">
+            <span class="label">หมวดหมู่:</span>
+            {product.categories?.map(cat => <a href={`/shop/${cat.slug}`}>{cat.name}</a>)}
+          </div>
+          <p class="short-description">{product.shortDescription}</p>
+          
+          {product.features &&
+            <ul class="features-list">
+              {product.features.map(feature => (
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0 -16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          }
+        </div>
+        <div class="product-col-purchase">
+          <PurchaseBox product={product} />
+        </div>
+      </div>
+      
+      <div class="description-section">
+        <h2>รายละเอียดสินค้า</h2>
+        <div class="prose" set:html={toHTML(product.description)} />
+        
+        {product.youtubeUrl && (
+          <div class="video-container">
+            <h3>วิดีโอประกอบสินค้า</h3>
+            <iframe 
+              src={`https://www.youtube.com/embed/${product.youtubeUrl.split('v=')[1]}`}
+              title="วิดีโอ YouTube"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+        )}
+
+        <div class="full-width-gallery">
+          {product.gallery?.map(img => (
+            <img src={`${img.url}?w=1000&auto=format`} alt={img.alt || product.name} loading="lazy" />
+          ))}
+        </div>
+
+        <div class="bottom-purchase-box">
+          <PurchaseBox product={product} />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

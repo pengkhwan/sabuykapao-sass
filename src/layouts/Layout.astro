@@ -1,0 +1,47 @@
+---
+// src/layouts/Layout.astro
+import '../styles/global.scss';
+import Header from '../components/Header.svelte';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import SEO from '../components/SEO.astro'; // Import SEO Component
+
+// เพิ่ม props สำหรับรับค่า SEO
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  astroSite?: URL; // Astro.site
+}
+const { title, description, ogImage } = Astro.props;
+---
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <SEO
+      title={title}
+      description={description || "เครื่องหนังแท้แฮนด์เมด สั่งทำพิเศษ สลักชื่อได้"}
+      canonical={Astro.url.href}
+      openGraph={{
+        basic: {
+          title: title,
+          type: 'website',
+          image: ogImage || new URL('/images/og-default.png', Astro.site).href,
+        }
+      }}
+    />
+  </head>
+  <body>
+    <Header client:load />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <MobileNav />
+  </body>
+</html>

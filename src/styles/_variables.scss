@@ -1,0 +1,23 @@
+// src/styles/_variables.scss
+@use 'sass:math';
+
+// --- Color Palette ---
+$clr-bg-primary: #FAFAFA;
+$clr-bg-secondary: #E6E2DE;
+$clr-bg-box: #F5F4F2;
+$clr-text-body: #000000;      // แก้ไข: สีสำหรับเนื้อหาทั่วไป
+$clr-text-heading: #6C463E; // เพิ่ม: สีสำหรับหัวข้อ (สีเดิม)
+$clr-accent: #A98C72;
+
+// --- Typography ---
+$font-heading: 'Prompt', sans-serif;
+$font-body: sans-serif;
+
+// --- Mixin for Fluid Typography ---
+@mixin fluid-font($min-size, $max-size) {
+  font-size: clamp(
+    #{math.div($min-size, 16)}rem,
+    calc(#{math.div($min-size, 16)}rem + (#{$max-size - $min-size}) * ((100vw - 320px) / (1200 - 320))),
+    #{math.div($max-size, 16)}rem
+  );
+}

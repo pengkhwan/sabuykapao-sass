@@ -1,0 +1,32 @@
+---
+// src/components/ProductSchema.astro
+interface Props {
+  product: any;
+}
+const { product } = Astro.props;
+
+// สร้างข้อมูล JSON-LD สำหรับ Schema.org
+const productSchema = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": product.name,
+  // แก้ไข: ใช้ mainImageUrl โดยตรง
+  "image": product.mainImageUrl ? [product.mainImageUrl] : [], 
+  "description": product.shortDescription,
+  "sku": product._id, // ใช้ ID ของ Sanity เป็น SKU
+  "brand": {
+    "@type": "Brand",
+    "name": "SabuyKapao"
+  },
+  // ตรวจสอบว่ามี product.price ก่อนใช้งาน
+  "offers": product.price ? {
+    "@type": "Offer",
+    "url": new URL(`/${product.slug.current}`, Astro.site).href,
+    "priceCurrency": "THB",
+    "price": product.price,
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition"
+  } : undefined // ถ้าไม่มีราคา ก็ไม่ต้องใส่ข้อมูล offer
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(productSchema)} />

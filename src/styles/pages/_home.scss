@@ -1,0 +1,140 @@
+// src/styles/pages/_home.scss
+@use 'sass:color';
+@use '../variables' as var;
+
+// --- General Styles ---
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.section-header {
+  text-align: center; margin-bottom: 3rem;
+  h2 { font-size: 2.25rem; color: var.$clr-text-heading; }
+  p { margin-top: 0.75rem; color: var.$clr-text-body; max-width: 600px; margin-left: auto; margin-right: auto; }
+}
+.cta-button {
+  display: inline-block; background-color: color.scale(var.$clr-accent, $lightness: -20%);
+  color: #fff; font-family: var.$font-heading; font-weight: 700;
+  padding: 0.8rem 2rem; border-radius: 8px; transition: background-color 0.2s ease;
+  &:hover { background-color: var.$clr-accent; color: #fff; }
+}
+.text-link {
+  font-size: 1.125rem; font-family: var.$font-heading; color: var.$clr-accent;
+  &:hover { color: color.scale(var.$clr-accent, $lightness: -10%); }
+}
+
+// --- Hero Section ---
+.hero-section {
+  padding: 4rem 0; background-color: var.$clr-bg-primary;
+  &__grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; @media (min-width: 768px) { grid-template-columns: 1fr 1fr; } }
+  &__content {
+    h1 { font-size: 2.75rem; line-height: 1.2; color: var.$clr-text-heading; }
+    p { font-size: 1.125rem; line-height: 1.7; margin: 1.5rem 0 2rem; max-width: 500px; }
+  }
+  &__image { display: none; @media (min-width: 768px) { display: block; } img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); } }
+}
+
+// --- Category Section ---
+.category-section {
+  padding: 4rem 0;
+  &__box { background-color: var.$clr-bg-box; border-radius: 12px; padding: 3rem 2rem; @media (min-width: 768px) { padding: 4rem; } }
+}
+.category-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+  @media (min-width: 640px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 768px) { grid-template-columns: repeat(4, 1fr); }
+}
+.category-card {
+  text-align: center;
+  &__image-link {
+    display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; transition: box-shadow 0.2s ease;
+    &:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+  &__name { margin-top: 1rem; font-size: 1.125rem; color: var.$clr-text-heading; }
+}
+
+// --- Product Showcase Section ---
+.showcase-section { padding: 4rem 0; background-color: color.scale(var.$clr-bg-secondary, $lightness: 5%); }
+.product-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.5rem;
+  @media (min-width: 768px) { grid-template-columns: repeat(4, 1fr); }
+}
+.product-card {
+  &__image-wrapper {
+    aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; background-color: var.$clr-bg-secondary;
+    img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease; }
+  }
+  &:hover &__image-wrapper img { opacity: 0.85; }
+  &__name { margin-top: 1rem; font-size: 1.125rem; color: var.$clr-text-heading; }
+  &__category { font-size: 0.875rem; color: color.scale(var.$clr-text-body, $lightness: 15%); margin-top: 0.25rem; }
+  &__link {
+    display: inline-block; margin-top: 0.5rem; font-size: 0.875rem;
+    font-family: var.$font-heading; color: var.$clr-accent;
+    &:hover { color: color.scale(var.$clr-accent, $lightness: -10%); }
+  }
+}
+
+// --- Art of Crafting Section ---
+.crafting-section {
+  padding: 4rem 0;
+  &__grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; @media (min-width: 768px) { grid-template-columns: 1fr 1fr; } }
+  &__image { @media (min-width: 768px) { order: -1; } img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); } }
+  &__content {
+    h2 { font-size: 2.25rem; color: var.$clr-text-heading; }
+    p { margin: 1rem 0 1.5rem; line-height: 1.7; }
+  }
+}
+
+// --- Custom Order Section ---
+.custom-order-section {
+  padding: 4rem 0;
+  background-color: var.$clr-bg-box;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__image {
+    @media (min-width: 768px) {
+      order: 1;
+    }
+    img {
+      width: 100%;
+      height: 100%; /* แก้ไข */
+      border-radius: 12px;
+      aspect-ratio: 4 / 3; /* เพิ่ม: บังคับสัดส่วนแนวนอน */
+      object-fit: cover; /* เพิ่ม: ทำให้รูปเต็มกรอบโดยไม่เสียสัดส่วน */
+    }
+  }
+
+  &__content {
+    h2 {
+      font-size: 2.25rem;
+      color: var.$clr-text-heading;
+    }
+    p {
+      margin: 1rem 0 1.5rem;
+      line-height: 1.7;
+    }
+    @media (min-width: 768px) {
+      order: -1;
+    }
+  }
+}
+
+// --- Testimonials Section ---
+.testimonial-section { padding: 4rem 0; background-color: var.$clr-bg-primary; }
+.testimonial-grid {
+  display: grid; grid-template-columns: 1fr; gap: 2rem;
+  @media (min-width: 768px) { grid-template-columns: repeat(3, 1fr); }
+}
+.testimonial-card {
+  background-color: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  &__icon { width: 2rem; height: 2rem; color: var.$clr-accent; margin-bottom: 1rem; }
+  p { margin-bottom: 1.5rem; }
+  footer { font-family: var.$font-heading; font-weight: 700; color: var.$clr-text-heading; }
+}

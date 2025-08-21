@@ -1,0 +1,70 @@
+---
+// src/pages/shop/index.astro
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/pages/_shop.scss';
+
+// --- นำเข้ารูปภาพสำหรับหมวดหมู่ ---
+import categoryKeychain from '../../assets/images/category-keychain.webp';
+import categoryHandbag from '../../assets/images/category-handbag.webp';
+import categoryShoulderBag from '../../assets/images/category-shoulder-bag.webp';
+import categoryWallet from '../../assets/images/category-wallet.webp';
+import categoryBackpack from '../../assets/images/category-backpack.webp';
+import categoryChestBag from '../../assets/images/category-chest-bag.webp';
+import categoryBelt from '../../assets/images/category-belt.webp';
+import categoryEtc from '../../assets/images/category-etc.webp';
+
+// --- ข้อมูลหมวดหมู่ ---
+const categories = [
+  { name: 'พวงกุญแจหนัง', href: '/keychain', image: categoryKeychain },
+  { name: 'กระเป๋าถือ', href: '/handbag', image: categoryHandbag },
+  { name: 'กระเป๋าสะพาย', href: '/shoulder-bag', image: categoryShoulderBag },
+  { name: 'กระเป๋าสตางค์', href: '/wallet', image: categoryWallet },
+  { name: 'กระเป๋าเป้', href: '/backpack', image: categoryBackpack },
+  { name: 'กระเป๋าคาดอก', href: '/chest-bag', image: categoryChestBag },
+  { name: 'เข็มขัด', href: '/belt', image: categoryEtc },
+  { name: 'สินค้าจิปาถะ', href: '/etc', image: categoryEtc },
+];
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "รวมสินค้าเครื่องหนังแท้ - กระเป๋า พวงกุญแจ ของชำร่วย | SabuyKapao",
+  "description": "เลือกซื้อสินค้าเครื่องหนังแท้แฮนด์เมดหลากหลายประเภท ทั้งกระเป๋าสตางค์, กระเป๋าสะพาย, พวงกุญแจ, เข็มขัด และอื่นๆอีกมากมาย สินค้าคุณภาพพรีเมียมจาก SabuyKapao",
+  "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+
+<Layout 
+  title="รวมสินค้าเครื่องหนังแท้ - กระเป๋า พวงกุญแจ ของชำร่วย | SabuyKapao"
+  description="เลือกซื้อสินค้าเครื่องหนังแท้แฮนด์เมดหลากหลายประเภท ทั้งกระเป๋าสตางค์, กระเป๋าสะพาย, พวงกุญแจ, เข็มขัด และอื่นๆอีกมากมาย สินค้าคุณภาพพรีเมียมจาก SabuyKapao"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="shop-page">
+    <div class="container">
+      <h1 class="page-title">สินค้า</h1>
+      <div class="shop-grid__container">
+        <div class="shop-grid">
+          {categories.map((category) => (
+            <div class="category-card">
+              <a href={category.href} class="category-card__image-link">
+                <Image 
+                  src={category.image} 
+                  alt={category.name} 
+                  width="400" 
+                  height="400" 
+                  format="webp" 
+                  quality={80} 
+                />
+              </a>
+              <h3 class="category-card__name">{category.name}</h3>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

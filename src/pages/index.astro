@@ -1,0 +1,181 @@
+---
+// src/pages/index.astro
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import '../styles/pages/_home.scss';
+
+// --- Import รูปภาพทั้งหมด ---
+import heroImage from '../assets/images/hero-main-photo.webp';
+import craftingImage from '../assets/images/crafting-process.webp';
+import customOrdersImage from '../assets/images/home-custom-orders.webp';
+
+import categoryKeychain from '../assets/images/category-keychain.webp';
+import categoryHandbag from '../assets/images/category-handbag.webp';
+import categoryShoulderBag from '../assets/images/category-shoulder-bag.webp';
+import categoryWallet from '../assets/images/category-wallet.webp';
+import categoryBackpack from '../assets/images/category-backpack.webp';
+import categoryChestBag from '../assets/images/category-chest-bag.webp';
+import categoryBelt from '../assets/images/category-belt.webp';
+import categoryEtc from '../assets/images/category-etc.webp';
+
+import productWallet from '../assets/images/product-wallet.webp';
+import productCrossbody from '../assets/images/product-crossbody-bag.webp';
+import productKeychain from '../assets/images/product-keychain.webp';
+import productBagCharm from '../assets/images/product-bag-charm.webp';
+
+// --- Mock Data ---
+const categories = [
+  { name: 'พวงกุญแจหนัง', href: '/keychain', image: categoryKeychain },
+  { name: 'กระเป๋าถือ', href: '/handbag', image: categoryHandbag },
+  { name: 'กระเป๋าสะพาย', href: '/shoulder-bag', image: categoryShoulderBag },
+  { name: 'กระเป๋าสตางค์', href: '/wallet', image: categoryWallet },
+  { name: 'กระเป๋าเป้', href: '/backpack', image: categoryBackpack },
+  { name: 'กระเป๋าคาดอก', href: '/chest-bag', image: categoryChestBag },
+  { name: 'เข็มขัด', href: '/belt', image: categoryBelt },
+  { name: 'สินค้าจิปาถะ', href: '/etc', image: categoryEtc },
+];
+const sampleProducts = [
+  { name: 'กระเป๋าสตางค์หนังวัวแท้ รุ่น Classic', category: 'กระเป๋าสตางค์', image: productWallet, href: '#' },
+  { name: 'กระเป๋าสะพายข้างหนังออย', category: 'กระเป๋าสะพาย', image: productCrossbody, href: '#' },
+  { name: 'พวงกุญแจหนังแท้ เชอร์รี่', category: 'พวงกุญแจหนัง', image: productKeychain, href: '#' },
+  { name: 'ที่ห้อยกระเป๋าหนังแท้', category: 'พวงกุญแจหนัง', image: productBagCharm, href: '#' },
+];
+const testimonials = [
+  { quote: 'หนังนุ่มมากครับ งานเย็บละเอียดจริงๆ สมกับเป็นงานแฮนด์เมดเลย', author: 'คุณธนพล' },
+  { quote: 'ใช้มาปีกว่าแล้ว หนังสวยขึ้นเรื่อยๆ เลยครับ ทนทานมาก ไม่ผิดหวัง', author: 'คุณสิรินยา' },
+  { quote: 'สั่งทำกระเป๋าตามแบบที่อยากได้ ร้านให้คำแนะนำดีมาก ได้ของตรงใจเป๊ะ', author: 'คุณวิชัย' },
+];
+---
+<Layout 
+  title="พวงกุญแจหนัง ของชำร่วยหนังแท้ รับสั่งทำ | กระเป๋าหนังแท้ Sabuykapao"
+  description="พวงกุญแจหนังแท้และเครื่องหนังแฮนด์เมดคุณภาพจาก Sabuykapao พร้อมบริการรับสั่งทำของชำร่วยหนังพรีเมียมสำหรับคนพิเศษและองค์กรของคุณ"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Sabuykapao",
+      "url": Astro.site,
+      "logo": new URL("/sabuykapao-logo.svg", Astro.site).href,
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+66-84-095-4445",
+        "contactType": "Customer Service"
+      }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": Astro.site,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${Astro.site}search?q={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      }
+    })} />
+  </Fragment>
+  
+  <section class="hero-section">
+    <div class="container hero-section__grid">
+      <div class="hero-section__content">
+        <h1>เครื่องหนังแท้แฮนด์เมด SabuyKapao: ศิลปะที่สัมผัสได้</h1>
+        <p>เราสร้างสรรค์กระเป๋าและเครื่องหนังจากหนังวัวแท้ 100% ผ่านงานฝีมืออันประณีต เพื่อให้ทุกชิ้นงานสะท้อนตัวตนของคุณและคงทนงดงามเหนือกาลเวลา</p>
+        <a href="/shop" class="cta-button">เลือกชมคอลเลคชั่นของเรา</a>
+      </div>
+      <div class="hero-section__image">
+        <Image src={heroImage} alt="กระเป๋าหนังแท้แฮนด์เมด" width="800" height="800" format="webp" quality={80} />
+      </div>
+    </div>
+  </section>
+
+  <section class="category-section">
+    <div class="container">
+      <div class="category-section__box">
+        <div class="section-header">
+          <h2>เลือกชมสินค้าตามหมวดหมู่</h2>
+          <p>ค้นหาสินค้าที่ใช่ในสไตล์ที่เป็นคุณ</p>
+        </div>
+        <div class="category-grid">
+          {categories.map((category) => (
+            <div class="category-card">
+              <a href={category.href} class="category-card__image-link">
+                <Image src={category.image} alt={category.name} width="400" height="400" format="webp" quality={80} />
+              </a>
+              <h3 class="category-card__name">{category.name}</h3>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="showcase-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>สินค้าแนะนำ</h2>
+        <p>ผลงานที่เราคัดสรรมาเป็นพิเศษและได้รับความนิยมสูงสุด</p>
+      </div>
+      <div class="product-grid">
+        {sampleProducts.map(product => (
+          <div class="product-card">
+            <div class="product-card__image-wrapper">
+              <Image src={product.image} alt={product.name} width="600" height="600" format="webp" quality={80} />
+            </div>
+            <h3 class="product-card__name">{product.name}</h3>
+            <p class="product-card__category">{product.category}</p>
+            <a href={product.href} class="product-card__link">ดูรายละเอียด &rarr;</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="crafting-section">
+    <div class="container crafting-section__grid">
+      <div class="crafting-section__image">
+        <Image src={craftingImage} alt="ช่างฝีมือกำลังเย็บขอบกระเป๋าหนังแท้" width="1200" height="800" format="webp" quality={80} />
+      </div>
+      <div class="crafting-section__content">
+        <h2>จากผืนหนังสู่ผลงานศิลป์: เรื่องราวเบื้องหลัง</h2>
+        <p>งานเย็บมือ (Hand-stitched) คือหัวใจของเครื่องหนังระดับพรีเมียม ทุกฝีเข็มที่บรรจงเย็บลงไป ไม่เพียงแต่ให้ความสวยงามและความแข็งแรงที่เหนือกว่างานจักร แต่ยังเป็นการใส่จิตวิญญาณของช่างฝีมือลงไปในชิ้นงานอีกด้วย</p>
+        <a href="/content" class="cta-button">อ่านบทความของเรา</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="custom-order-section">
+    <div class="container custom-order-section__grid">
+      <div class="custom-order-section__image">
+        <Image src={customOrdersImage} alt="ตัวอย่างของชำร่วยเครื่องหนังแท้สั่งทำพิเศษ" width="800" height="600" format="webp" quality={80}/>
+      </div>
+      <div class="custom-order-section__content">
+        <h2>รับผลิตของชำร่วยหนังแท้ สั่งทำพิเศษ</h2>
+        <p>
+          มอบของที่ระลึกสุดพรีเมียมในทุกโอกาสสำคัญ ไม่ว่าจะเป็นของชำร่วยงานแต่ง, งานเกษียณ, หรืองานบริษัท เราพร้อมให้คำปรึกษาและออกแบบ สลักชื่อหรือโลโก้ได้ในราคาโรงงาน เพื่อสร้างความประทับใจไม่รู้ลืม
+        </p>
+        <a href="/portfolio" class="cta-button">
+          ชมตัวอย่างผลงานของเรา
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonial-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>เสียงตอบรับจากลูกค้าของเรา</h2>
+      </div>
+      <div class="testimonial-grid">
+        {testimonials.map((item) => (
+          <div class="testimonial-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="testimonial-card__icon">
+              <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.352 0 9.75-3.67 9.75-8.25s-4.398-8.25-9.75-8.25S2.25 7.87 2.25 12.42c0 1.79.585 3.455 1.554 4.804a.75.75 0 00.19 1.01l-.002.002a.75.75 0 00.28.112l.003.001zM7.004 15a5.23 5.23 0 00-1.004-2.475.75.75 0 00-1.29-.756A6.978 6.978 0 013.75 12.42c0-3.81 3.69-6.9 8.25-6.9s8.25 3.09 8.25 6.9-3.69 6.9-8.25 6.9a8.21 8.21 0 01-2.417-.33.75.75 0 00-.635.057l-1.834 1.1a.75.75 0 01-1.003-.217z" clip-rule="evenodd" />
+            </svg>
+            <p>"{item.quote}"</p>
+            <footer>- {item.author}</footer>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

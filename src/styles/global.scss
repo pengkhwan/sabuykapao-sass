@@ -1,0 +1,50 @@
+// src/styles/global.scss
+@use 'sass:color';
+@use 'variables' as var;
+
+/* prompt-regular - latin_thai */
+@font-face {
+  font-display: swap;
+  font-family: 'Prompt';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/prompt-v11-latin_thai-regular.woff2') format('woff2');
+}
+/* prompt-700 - latin_thai */
+@font-face {
+  font-display: swap;
+  font-family: 'Prompt';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/prompt-v11-latin_thai-700.woff2') format('woff2');
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var.$clr-bg-primary;
+  color: var.$clr-text-body;
+  font-family: var.$font-body;
+  @include var.fluid-font(16, 18);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var.$font-heading;
+  color: var.$clr-text-heading;
+}
+
+/* แก้ไข: ปรับลดขนาด Heading */
+h1 { @include var.fluid-font(24, 26); } 
+h2 { @include var.fluid-font(22, 24); }
+h3 { @include var.fluid-font(20, 22); }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  &:hover { color: var.$clr-accent; }
+}
+
+@media (max-width: 767px) {
+  body { padding-bottom: 65px; }
+}

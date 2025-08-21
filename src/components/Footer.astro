@@ -1,0 +1,69 @@
+---
+// src/components/Footer.astro
+import '../styles/components/_Footer.scss';
+
+const productLinks = [
+  { href: "/keychain", text: "พวงกุญแจหนัง" },
+  { href: "/handbag", text: "กระเป๋าถือ" },
+  { href: "/shoulder-bag", text: "กระเป๋าสะพาย" },
+  { href: "/wallet", text: "กระเป๋าสตางค์" },
+  { href: "/backpack", text: "กระเป๋าเป้" },
+  { href: "/chest-bag", text: "กระเป๋าคาดอก" },
+  { href: "/belt", text: "เข็มขัดหนัง" },
+  { href: "/etc", text: "จิปาถะ" },
+];
+
+const legalLinks = [
+  { href: "/terms-and-conditions", text: "Terms and Conditions" },
+  { href: "/privacy-policy", text: "Privacy Policy" },
+  { href: "/refund-policy", text: "Refund Policy" },
+]
+---
+
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-column">
+      <p class="footer-heading">เกี่ยวกับเรา</p> <p>
+        สินค้าหนังแท้คุณภาพหลากหลายสไตล์ ในราคาย่อมเยา กระเป๋าสตางค์ กระเป๋าสะพาย พวงกุญแจ ของขวัญ ป้ายห้อยหนัง ผลิตจากหนังแท้เกรดพรีเมียม ทนทาน ใช้งานได้ยาวนาน ดีไซน์ทันสมัย ตอบโจทย์ทุกการใช้งาน สั่งซื้อเลยวันนี้!
+      </p>
+    </div>
+
+    <div class="footer-column">
+      <p class="footer-heading">สินค้าและบริการ</p> <ul>
+        {productLinks.map(link => (
+          <li><a href={link.href}>{link.text}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <p class="footer-heading">บทความแนะนำ</p> <ul>
+        <li><a href="#">เลือกซื้อกระเป๋าหนังผ่านร้านค้า</a></li>
+        <li><a href="#">วิธีดูแลรักษากระเป๋าหนัง</a></li>
+        <li><a href="#">การดูแลกระเป๋าหนัง</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <p class="footer-heading">ติดตามเรา</p> <div class="footer-socials">
+        <a href="#" aria-label="Facebook"><img src="/icons/icon-facebook.svg" alt="" width="24" height="24"></a>
+        <a href="#" aria-label="Instagram"><img src="/icons/icon-instagram.svg" alt="" width="24" height="24"></a>
+        <a href="#" aria-label="X"><img src="/icons/icon-x.svg" alt="" width="24" height="24"></a>
+        <a href="#" aria-label="Line"><img src="/icons/icon-line.svg" alt="" width="24" height="24"></a>
+        <a href="#" aria-label="YouTube"><img src="/icons/icon-youtube.svg" alt="" width="24" height="24"></a>
+        <a href="#" aria-label="TikTok"><img src="/icons/icon-tiktok.svg" alt="" width="24" height="24"></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="sub-footer">
+  <div class="sub-footer-content">
+    <p>© COPYRIGHT 2024 SABUYKAPAO.COM ALL RIGHTS RESERVED.</p>
+    <nav>
+      {legalLinks.map(link => (
+        <a href={link.href}>{link.text}</a>
+      ))}
+    </nav>
+  </div>
+</div>

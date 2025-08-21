@@ -1,0 +1,47 @@
+// src/styles/components/_MobileNav.scss
+@use 'sass:color';
+@use '../variables' as var;
+
+.mobile-nav {
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var.$clr-bg-secondary;
+    border-top: 1px solid color.scale(var.$clr-bg-secondary, $lightness: -8%);
+    z-index: 500;
+
+    ul {
+      list-style: none;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.5rem 1.5rem;
+      height: 65px;
+    }
+
+    li a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: var.$font-heading;
+      font-size: 0.75rem;
+      color: var.$clr-text-heading; /* แก้ไข: ใช้ตัวแปรสีสำหรับหัวข้อ */
+      opacity: 0.8;
+      
+      &:hover {
+        opacity: 1;
+      }
+
+      img {
+        height: 24px;
+        width: 24px;
+      }
+    }
+  }
+}
