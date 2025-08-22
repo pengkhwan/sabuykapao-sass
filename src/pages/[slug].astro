@@ -50,7 +50,7 @@ const pageDescription = data.seo?.description || data.excerpt || data.shortDescr
 // สร้าง object ของ components สำหรับ PortableText
 const components = {
   type: {
-    image: SanityImage, // บอกให้ PortableText ใช้ SanityImage.astro เมื่อเจอรูปภาพ
+    image: SanityImage, // บอกให้ PortableText ใช้ SanityImage.astro เมื่อเจอรูปภาพ (type="body" เป็น default)
   },
 };
 ---
@@ -115,10 +115,10 @@ const components = {
       <div class="article-header">
         <h1>{data.title}</h1>
 
-        {/* --- แสดงผล Featured Image --- */}
+        {/* --- แสดงผล Featured Image พร้อมระบุ type="featured" --- */}
         {data.featuredImage && (
           <div class="featured-image">
-            <SanityImage node={data.featuredImage} />
+            <SanityImage node={data.featuredImage} type="featured" />
           </div>
         )}
       </div>

@@ -22,6 +22,33 @@
     max-width: 768px;
     margin-left: auto;
     margin-right: auto;
+    
+    // --- เพิ่ม: ควบคุมขนาดรูปภาพใน body content ---
+    figure {
+      margin: 2rem auto;
+      text-align: center;
+      
+      img {
+        // ขนาดสำหรับ PC
+        width: 400px !important;
+        height: 400px !important;
+        max-width: calc(100vw - 2rem) !important;
+        object-fit: cover;
+        border-radius: 8px;
+        
+        // ขนาดสำหรับมือถือ
+        @media (max-width: 768px) {
+          width: 280px !important;
+          height: 280px !important;
+        }
+        
+        // ขนาดสำหรับ tablet
+        @media (max-width: 1024px) and (min-width: 769px) {
+          width: 350px !important;
+          height: 350px !important;
+        }
+      }
+    }
   }
 }
 
