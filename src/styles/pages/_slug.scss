@@ -3,11 +3,12 @@
 @use 'sass:color';
 
 .article-page {
-  // --- แก้ไข: เพิ่มระยะห่างด้านบน ---
-  padding-top: 4rem; 
+  // --- แก้ไข: เพิ่มระยะห่างด้านบนให้มากขึ้น ---
+  padding-top: 6rem; 
 
   .article-header {
     margin-bottom: 2.5rem;
+    margin-top: 2rem; // เพิ่มระยะห่างด้านบน
     h1 {
       text-align: center;
       margin-bottom: 2rem;
