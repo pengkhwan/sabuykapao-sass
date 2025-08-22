@@ -1,13 +1,11 @@
+// sanity.cli.js
+
 import {defineCliConfig} from 'sanity/cli'
 
 export default defineCliConfig({
   api: {
-    projectId: 'gfyo3ye1',
+    projectId: 'ik92gukm', // <-- แก้ไขเป็น ID ที่ถูกต้อง
     dataset: 'production'
   },
-  /**
-   * Enable auto-updates for studios.
-   * Learn more at https://www.sanity.io/docs/cli#auto-updates
-   */
-  autoUpdates: true,
+  // ...
 })

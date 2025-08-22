@@ -15,11 +15,18 @@
     "sanity"
   ],
   "dependencies": {
+    "@sanity/block-tools": "^3.70.0",
+    "@sanity/client": "^7.9.0",
     "@sanity/vision": "^4.5.0",
+    "dotenv": "^17.2.1",
+    "jsdom": "^26.1.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.1",
     "react-dom": "^19.1",
     "sanity": "^4.5.0",
-    "styled-components": "^6.1.18"
+    "slugify": "^1.6.6",
+    "styled-components": "^6.1.18",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@sanity/eslint-config-studio": "^5.0.2",
