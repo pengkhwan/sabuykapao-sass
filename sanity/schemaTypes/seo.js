@@ -1,5 +1,8 @@
 // sanity/schemaTypes/seo.js
-export default {
+import {defineField, defineType} from 'sanity'
+
+export default defineType({
+  // --- ใช้ defineType ครอบ schema ทั้งหมด ---
   name: 'seo',
   title: 'SEO & Social',
   type: 'object',
@@ -8,30 +11,31 @@ export default {
     { name: 'advanced', title: 'Advanced Settings' },
   ],
   fields: [
-    {
-      name: 'seoTitle',
+    // --- ใช้ defineField สำหรับแต่ละฟิลด์ ---
+    defineField({
+      name: 'title', // <-- ปรับชื่อให้สั้นลง
       title: 'SEO Title (Meta Title)',
       type: 'string',
       description: 'ชื่อเรื่องที่จะแสดงบน Google (ถ้าเว้นว่าง จะใช้ชื่อหลักของหน้าแทน)',
       validation: (Rule) => Rule.max(60).warning('ควรมีความยาวไม่เกิน 60 ตัวอักษร'),
-    },
-    {
-      name: 'seoDescription',
+    }),
+    defineField({
+      name: 'description', // <-- ปรับชื่อให้สั้นลง
       title: 'SEO Description (Meta Description)',
       type: 'text',
       description: 'คำอธิบายสั้นๆ ที่จะแสดงบน Google (ประมาณ 155-160 ตัวอักษร)',
       rows: 3,
       validation: (Rule) => Rule.required().error('กรุณาใส่ Meta Description สำหรับ SEO').max(160).warning('ควรมีความยาวไม่เกิน 160 ตัวอักษร'),
-    },
-    {
+    }),
+    defineField({
       name: 'ogTitle',
       title: 'Social Title (Open Graph)',
       type: 'string',
       description: 'ชื่อเรื่องที่จะแสดงตอนแชร์ลงโซเชียล (ถ้าเว้นว่าง จะใช้ SEO Title แทน)',
       fieldset: 'social',
       validation: (Rule) => Rule.max(60).warning('ควรมีความยาวไม่เกิน 60 ตัวอักษร'),
-    },
-    {
+    }),
+    defineField({
       name: 'ogDescription',
       title: 'Social Description (Open Graph)',
       type: 'text',
@@ -39,8 +43,8 @@ export default {
       rows: 3,
       fieldset: 'social',
       validation: (Rule) => Rule.max(160).warning('ควรมีความยาวไม่เกิน 160 ตัวอักษร'),
-    },
-    {
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Social Image (Open Graph)',
       type: 'image',
@@ -49,38 +53,37 @@ export default {
       options: {
         hotspot: true,
       },
-      // แก้ไข: เพิ่ม alt field
       fields: [
-        {
+        defineField({ // <-- ใช้ defineField กับฟิลด์ย่อยด้วย
           name: 'alt',
           title: 'Alternative text',
           type: 'string',
           description: 'คำอธิบายรูปภาพสำหรับโซเชียลมีเดีย',
-        }
+        })
       ]
-    },
-    {
+    }),
+    defineField({
       name: 'canonicalUrl',
       title: 'Canonical URL',
       type: 'url',
       description: '(ไม่จำเป็น) ใส่ URL หลักของหน้านี้ หากมีหลาย URL ที่เข้าถึงเนื้อหาเดียวกันได้',
       fieldset: 'advanced',
-    },
-    {
+    }),
+    defineField({
       name: 'noIndexPage',
       title: 'Hide this page from search engines (noindex)',
       type: 'boolean',
       description: 'ติ๊กถูกเพื่อบอก Google ไม่ให้เก็บหน้านี้ไปแสดงผล',
       fieldset: 'advanced',
       initialValue: false,
-    },
-    {
+    }),
+    defineField({
       name: 'noFollowLinks',
       title: 'Do not follow links on this page (nofollow)',
       type: 'boolean',
       description: 'ติ๊กถูกเพื่อบอก Google ไม่ให้คลิกตามลิงก์ในหน้านี้',
       fieldset: 'advanced',
       initialValue: false,
-    },
+    }),
   ],
-}
+})

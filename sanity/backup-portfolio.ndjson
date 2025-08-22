@@ -1,0 +1,235 @@
+[
+  {
+    "_createdAt": "2025-08-19T08:19:56Z",
+    "_id": "1509f3e0-c8df-4c2c-b229-3e024688ab42",
+    "_rev": "ZBFqyJCMiDLTwdwPrFifcw",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T08:21:32Z",
+    "description": "ป้ายหนังแท้ ชนิดฟอกฝาด ทรงสี่เหลี่ยม ปั๊มชื่อด้วย ความร้อน",
+    "mainImage": {
+      "_type": "image",
+      "alt": "ป้ายหนังฟอกฝาดสี่เหลี่ยม ปั๊มชื่อด้วยความร้อน",
+      "asset": {
+        "_ref": "image-05166d85ba037d20bc2bec32c8b850169f5fabcf-600x600-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "ป้ายหนังสี่เหลี่ยม ปั๊มชื่อด้วยความร้อน"
+  },
+  {
+    "_createdAt": "2025-08-19T07:59:57Z",
+    "_id": "179802ea-3399-440d-880e-1b421c594d89",
+    "_rev": "c5tgynizOj21jE9qcwZTwS",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T08:00:34Z",
+    "description": "สายรัดที่ชาร์จ-มือถือ หรือไว้รัดสาย usb  ปั๊มชื่อด้วยความร้อน",
+    "mainImage": {
+      "_type": "image",
+      "alt": "สายรัดที่ชาร์จ หนังแท้ สลักชื่อด้วยความร้อน",
+      "asset": {
+        "_ref": "image-895e4b5c5761e97ffacac2727598a4d676045ff6-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "สายรัดที่ชาร์จ-สลักชื่อ"
+  },
+  {
+    "_createdAt": "2025-08-20T01:45:03Z",
+    "_id": "2379bb4b-de84-4494-93f0-6d552a8ba770",
+    "_rev": "kVW44PlqniRTsCLqJcFR1j",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-20T01:46:22Z",
+    "description": "ป้ายหนังแท้วงกลมสลักชื่อวงดนตรี สั่งทำได้ตามข้อความที่ต้องการ งานสลักคมชัด ทนทาน เหมาะเป็นป้ายประจำวง ของที่ระลึก หรือของพรีเมียมงานทัวร์",
+    "mainImage": {
+      "_type": "image",
+      "alt": "ประทับชื่อวงด้วยป้ายหนังวงกลม สวย หรู ทนทาน",
+      "asset": {
+        "_ref": "image-aa4a0230dc166146f620479a12bd40a322eb7214-700x700-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "ป้ายหนังวงกลมสลักชื่อวงดนตรี"
+  },
+  {
+    "_createdAt": "2025-08-19T07:35:34Z",
+    "_id": "35178b5e-5d60-4f90-a2bf-d3aada5b3abb",
+    "_rev": "ZBFqyJCMiDLTwdwPrFh9oo",
+    "_system": {
+      "base": {
+        "id": "35178b5e-5d60-4f90-a2bf-d3aada5b3abb",
+        "rev": "aRqql8luo1rF9vrN9HXEZA"
+      }
+    },
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T07:45:55Z",
+    "description": "ป้ายหนังฟอกฝาดวงกลม สลัก logo ด้วยความร้อน นำไปห้อยหรือติดพวงกุญแจได้",
+    "mainImage": {
+      "_type": "image",
+      "alt": "ป้ายหนังฟอกฝาดวงกลม สลัก logo",
+      "asset": {
+        "_ref": "image-918c5654a920bfd79886645cddd8746b5c915450-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "ป้ายวงกลม งานแต่งคุณเนตร"
+  },
+  {
+    "_createdAt": "2025-08-19T08:01:02Z",
+    "_id": "3e5e029c-2a2e-43bc-847e-ecdc5340fae5",
+    "_rev": "c5tgynizOj21jE9qcwZZs7",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T08:01:51Z",
+    "description": "ป้ายหนังแท้สี่เหลี่ยม-พร้อมชื่อ สลักชื่อ และข้อความด้วยเลเซอร์",
+    "mainImage": {
+      "_type": "image",
+      "alt": "ป้ายหนังแท้สี่เหลี่ยม- สลักชื่อ ข้อความด้วยเลเซอร์",
+      "asset": {
+        "_ref": "image-840dbd3b9a40118f39a7ced1e2f5d12f22c17612-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "ป้ายหนังแท้สี่เหลี่ยม-พร้อมชื่อ"
+  },
+  {
+    "_createdAt": "2025-08-19T07:57:13Z",
+    "_id": "47dc10c1-2443-40c2-bf7c-b756d7bf5a25",
+    "_rev": "ZBFqyJCMiDLTwdwPrFhU6s",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T07:57:47Z",
+    "description": "พวงกุญแจเชอร์รี่-พร้อมชื่อ ข้อความลูกค้า ปั๊มด้วยความร้อน",
+    "mainImage": {
+      "_type": "image",
+      "alt": "พวงกุญแจเชอร์รี่-พร้อมชื่อ ข้อความลูกค้า",
+      "asset": {
+        "_ref": "image-076865d7ee2b3e555e65ad2aff25c6d4053a4abb-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจเชอร์รี่-พร้อมชื่อ"
+  },
+  {
+    "_createdAt": "2025-08-19T08:02:30Z",
+    "_id": "5135bbd5-af01-4432-ab65-312e924010ef",
+    "_rev": "ZBFqyJCMiDLTwdwPrFhi0A",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T08:03:07Z",
+    "description": "พวงกุญแจหนัง-ร้านวรธรรม เครื่องเขียน สลักชื่อด้วยเลเซอร์",
+    "mainImage": {
+      "_type": "image",
+      "alt": "พวงกุญแจหนัง-ร้านวรธรรม เครื่องเขียน",
+      "asset": {
+        "_ref": "image-0327f67bd9e2a080b9332e5837de581a213b5b03-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจหนัง-ร้านวรธรรม เครื่องเขียน"
+  },
+  {
+    "_createdAt": "2025-08-19T08:09:27Z",
+    "_id": "526c8f59-9bb4-4ea2-97cf-a5aff9e8591e",
+    "_rev": "c5tgynizOj21jE9qcwa2QC",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T08:10:14Z",
+    "description": "สายคล้องแมส ป้ายหนังฟอกฝาด สลักชื่อด้วยการตอก",
+    "mainImage": {
+      "_type": "image",
+      "alt": "สายคล้องแมส หนังแท้ ป้ายหนังสลักชื่อ",
+      "asset": {
+        "_ref": "image-b0837c08c8c521636972b5eb13de280fafe6243b-600x600-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "สายคล้องแมส ป้ายหนังสลักชื่อ"
+  },
+  {
+    "_createdAt": "2025-08-19T08:15:48Z",
+    "_id": "88c0b35d-1a48-4eca-9b04-eb32399f6d9a",
+    "_rev": "tQ474pS7SBHxRVVxfO2WYa",
+    "_system": {
+      "base": {
+        "id": "88c0b35d-1a48-4eca-9b04-eb32399f6d9a",
+        "rev": "aRqql8luo1rF9vrN9Ha5y0"
+      }
+    },
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-20T01:38:05Z",
+    "description": "ฉลองงานเลี้ยงรุ่น 2024 ด้วยพวงกุญแจหนังทรงใบไม้",
+    "mainImage": {
+      "_type": "image",
+      "alt": "ของขวัญงานเลี้ยงรุ่นที่ระลึก — พวงกุญแจใบไม้สลักชื่อ",
+      "asset": {
+        "_ref": "image-20a7ab2e8d2ed4f16bfd05ae2866f910da4e2b39-1113x1113-jpg",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจหนังทรงใบไม้ สลักชื่อ — Reunion 2024"
+  },
+  {
+    "_createdAt": "2025-08-20T01:39:43Z",
+    "_id": "88cc354e-e331-404c-863a-daa6ed6f33c9",
+    "_rev": "kVW44PlqniRTsCLqJcF9gJ",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-20T01:40:20Z",
+    "description": "พวงกุญแจหนังสลักคำมงคล สั่งทำได้ตามข้อความที่ต้องการ งานสลักคมชัด ทนทาน เหมาะเป็นของขวัญและของชำร่วยสไตล์มินิมอล",
+    "mainImage": {
+      "_type": "image",
+      "alt": "เติมพลังให้ทุกวันด้วยคำมงคลบนพวงกุญแจหนัง",
+      "asset": {
+        "_ref": "image-907b68475ee2c406d582f8e59c61c46a349a75e3-1232x1232-jpg",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจหนังสลักคำมงคล"
+  },
+  {
+    "_createdAt": "2025-08-19T07:46:25Z",
+    "_id": "a42c261f-7ce6-4548-978c-e1d8f6f211ba",
+    "_rev": "ZBFqyJCMiDLTwdwPrFhI0s",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T07:50:39Z",
+    "description": "พวงกุญแจไซบีเรียน ใส่ logo ของลูกค้า",
+    "mainImage": {
+      "_type": "image",
+      "alt": "พวงกุญแจไซบีเรียน ใส่ logo",
+      "asset": {
+        "_ref": "image-4c0e928133a08c41e80b6fb1ef02b16f0689d703-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจไซบีเรียน-ป้ายลูกค้า"
+  },
+  {
+    "_createdAt": "2025-08-19T07:55:55Z",
+    "_id": "bc94bb75-ad54-442d-b452-f4aa7d01d973",
+    "_rev": "c5tgynizOj21jE9qcwZHao",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T07:56:46Z",
+    "description": "พวงกุญแจหนัง-ปัจฉิมนิเทศ ทำจากหนังฟอกฝาดแท้ สลักชื่อด้วยเลเซอร์",
+    "mainImage": {
+      "_type": "image",
+      "alt": "พวงกุญแจหนัง-ปัจฉิมนิเทศ ใส่ชื่อ",
+      "asset": {
+        "_ref": "image-5bb2c1aebbd6e661896973c1ba508d7a840610e0-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจหนัง-ปัจฉิมนิเทศ"
+  },
+  {
+    "_createdAt": "2025-08-19T07:58:20Z",
+    "_id": "d3728e4a-f09e-492c-8d7a-65d0449e8dd0",
+    "_rev": "c5tgynizOj21jE9qcwZOJk",
+    "_type": "portfolio",
+    "_updatedAt": "2025-08-19T07:59:10Z",
+    "description": "พวงกุญแจสั่งทำ-ออกค้าออกแบบเอง สลักชื่อด้วยเลเซอร์",
+    "mainImage": {
+      "_type": "image",
+      "alt": "พวงกุญแจสั่งทำ-ลูกค้าออกแบบเอง ",
+      "asset": {
+        "_ref": "image-167ee32d641f81d9aa24d58041e4bf53da2ffca1-400x400-webp",
+        "_type": "reference"
+      }
+    },
+    "title": "พวงกุญแจสั่งทำ-พร้อมชื่อ"
+  }
+]

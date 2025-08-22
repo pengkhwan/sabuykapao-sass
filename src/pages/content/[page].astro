@@ -1,0 +1,88 @@
+---
+// src/pages/content/[page].astro (เวอร์ชันแก้ไข)
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/pages/_content.scss';
+import { client } from '../../lib/sanityClient.js';
+import { urlFor } from '../../lib/sanityImageUrl';
+
+export async function getStaticPaths({ paginate }) {
+  // --- แก้ไข Query: เพิ่มการดึง alt text ของ featuredImage ---
+  const query = `*[_type == "article" && defined(slug.current)] | order(publishedAt desc) {
+    _id,
+    title,
+    slug, // <-- ดึง slug object มาทั้งก้อน
+    excerpt,
+    featuredImage {
+      asset, // <-- ดึง asset reference
+      "alt": alt // <-- ดึง alt text ที่เราเพิ่งเพิ่มใน Sanity
+    }
+  }`;
+  const allArticles = await client.fetch(query);
+
+  return paginate(allArticles, { pageSize: 9 });
+}
+
+const { page } = Astro.props;
+const articles = page.data;
+
+const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "บทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้ | SabuyKapao",
+    "description": "แหล่งรวมบทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้จาก SabuyKapao...",
+    "url": new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+
+<Layout 
+  title="บทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้ | SabuyKapao"
+  description="แหล่งรวมบทความและสาระน่ารู้เกี่ยวกับเครื่องหนังแท้จาก SabuyKapao..."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
+  </Fragment>
+
+  <main class="content-page">
+    <div class="container">
+      <h1 class="page-title">บทความน่ารู้</h1>
+
+      <div class="content-grid">
+        {articles.map((article, index) => (
+          <article class="article-card">
+            <a href={`/${article.slug.current}`} class="article-card__image-link">
+              {article.featuredImage ? (
+                <Image 
+                  src={urlFor(article.featuredImage).width(600).height(600).quality(80).format('webp').url()} 
+                  
+                  // --- จุดที่แก้ไข ---
+                  // ใช้ alt จาก featuredImage โดยตรง, ถ้าไม่มีให้ใช้ title เป็นตัวสำรอง
+                  alt={article.featuredImage.alt || article.title} 
+                  
+                  width="600" 
+                  height="600"
+                  loading={index < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              ) : (
+                <div class="placeholder-image"></div>
+              )}
+            </a>
+            <div class="article-card__content">
+              <h2 class="article-card__title">
+                <a href={`/${article.slug.current}`}>{article.title}</a>
+              </h2>
+              {article.excerpt && <p class="article-card__excerpt">{article.excerpt}</p>}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <nav class="pagination">
+        {page.url.prev && <a href={page.url.prev} class="pagination__link prev">&larr; หน้าก่อนหน้า</a>}
+        <span class="pagination__current">หน้า {page.currentPage} / {page.lastPage}</span>
+        {page.url.next && <a href={page.url.next} class="pagination__link next">หน้าถัดไป &rarr;</a>}
+      </nav>
+    </div>
+  </main>
+</Layout>

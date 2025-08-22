@@ -1,4 +1,4 @@
-// sanity/import-script.js
+// sanity/import-script.js (Final Version - Text Only with SEO)
 
 require('dotenv').config();
 const slugify = require('slugify');
@@ -6,92 +6,43 @@ const fs = require('fs');
 const xml2js = require('xml2js');
 const { JSDOM } = require('jsdom');
 const { createClient } = require('@sanity/client');
-const fetch = require('node-fetch');
 
 const sanityClient = createClient({
-  projectId: 'ik92gukm',
-  dataset: 'production',
-  apiVersion: '2024-08-22',
+  projectId: process.env.SANITY_STUDIO_API_PROJECT_ID || 'ik92gukm',
+  dataset: process.env.SANITY_STUDIO_API_DATASET || 'production',
   token: process.env.SANITY_API_TOKEN,
+  apiVersion: '2024-08-22',
   useCdn: false,
 });
 
 const outputFilename = 'import-data.ndjson';
 const xmlFilePath = './wordpress.xml';
 
-async function uploadImage(url) {
-  try {
-    console.log(`   > 📥 กำลังดาวน์โหลดรูปภาพจาก: ${url}`);
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
-    const imageBuffer = await response.buffer();
-    
-    console.log(`   > 📤 กำลังอัปโหลดรูปภาพไปยัง Sanity...`);
-    const asset = await sanityClient.assets.upload('image', imageBuffer, {
-      filename: url.split('/').pop(),
-    });
-    console.log(`   > ✅ อัปโหลดสำเร็จ, Asset ID: ${asset._id}`);
-    return asset;
-  } catch (error) {
-    console.error(`   > ❌ เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ ${url}:`, error.message);
-    return null;
-  }
-}
-
+// --- ลบฟังก์ชัน uploadImage และแก้ไข htmlToPortableText ---
 async function htmlToPortableText(html) {
   if (!html) return [];
-  
   const dom = new JSDOM(html);
   const body = dom.window.document.body;
   const blocks = [];
 
   for (const node of Array.from(body.childNodes)) {
-    if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE'].includes(node.nodeName)) {
-      if (node.textContent.trim() === '') continue;
-      const style = node.nodeName.startsWith('H') ? node.nodeName.toLowerCase() : 'normal';
-      blocks.push({
-        _type: 'block',
-        style: style === 'BLOCKQUOTE' ? 'blockquote' : style,
-        children: [{ _type: 'span', text: node.textContent.trim() }]
-      });
+    if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'UL', 'OL', 'LI'].includes(node.nodeName)) {
+       if (node.textContent.trim() === '') continue;
+       // หมายเหตุ: การแปลง list (UL, OL) แบบง่ายๆ อาจจะไม่สมบูรณ์ 100%
+       const style = node.nodeName.startsWith('H') ? node.nodeName.toLowerCase() : 'normal';
+       blocks.push({
+         _type: 'block',
+         style: style,
+         children: [{ _type: 'span', text: node.textContent.trim() }]
+       });
     }
-    
-    if (node.nodeName === 'FIGURE' && node.querySelector('img')) {
-      const img = node.querySelector('img');
-      const imageUrl = img.getAttribute('src');
-
-      if (!imageUrl || !imageUrl.startsWith('http')) {
-        console.warn(`   > ⚠️ ข้ามรูปภาพเนื่องจาก URL ไม่ถูกต้อง: "${imageUrl}"`);
-        continue;
-      }
-      
-      const imageAsset = await uploadImage(imageUrl);
-      if (!imageAsset) continue;
-
-      const altText = img.getAttribute('alt') || '';
-      const figcaption = node.querySelector('figcaption');
-      const captionText = figcaption ? figcaption.textContent.trim() : undefined;
-
-      blocks.push({
-        _type: 'image',
-        asset: { _type: 'reference', _ref: imageAsset._id },
-        alt: altText,
-        caption: captionText,
-      });
-    }
+    // เราไม่ประมวลผล FIGURE หรือ IMG อีกต่อไป
   }
   return blocks;
 }
 
 async function prepareData() {
   try {
-    console.log(`>> กำลังตรวจสอบไฟล์ที่ path: '${xmlFilePath}'...`);
-    if (!fs.existsSync(xmlFilePath)) {
-      console.error(`❌ ไม่พบไฟล์! กรุณาตรวจสอบว่าไฟล์ 'wordpress.xml' อยู่ในโฟลเดอร์เดียวกับสคริปต์`);
-      return;
-    }
-    console.log(`✅ พบไฟล์ '${xmlFilePath}'`);
-
     if (fs.existsSync(outputFilename)) fs.unlinkSync(outputFilename);
     const xmlData = fs.readFileSync(xmlFilePath, 'utf-8');
     const parser = new xml2js.Parser();
@@ -103,16 +54,26 @@ async function prepareData() {
       if (item['wp:post_type'][0] !== 'post') continue;
       
       const title = item.title && item.title[0] ? item.title[0] : 'No Title';
-      const slug = item['wp:post_name'][0];
+      const slug = item['wp:post_name'][0] || '';
       const postId = item['wp:post_id'][0];
 
-      if (!postId) {
-        console.warn(`   > ⚠️ ข้ามบทความ "${title}" เนื่องจากไม่พบ Post ID`);
-        continue;
-      }
+      if (!postId) continue;
       
       console.log(`\n--- กำลังประมวลผล: "${title}" (ID: ${postId}) ---`);
+
+      // --- 1. ดึงข้อมูล Excerpt และแปลง Post Meta ---
+      const excerpt = item['excerpt:encoded']?.[0] || '';
       
+      const postMeta = {};
+      if (item['wp:postmeta']) {
+        item['wp:postmeta'].forEach(meta => {
+          const key = meta['wp:meta_key'][0];
+          const value = meta['wp:meta_value'][0];
+          postMeta[key] = value;
+        });
+      }
+      // ---------------------------------------------
+
       let publishedDate = new Date(item.pubDate ? item.pubDate[0] : null);
       if (isNaN(publishedDate.getTime())) publishedDate = new Date();
 
@@ -123,9 +84,19 @@ async function prepareData() {
         _id: `imported-wp-${postId}`,
         _type: 'article',
         title: title,
-        slug: { _type: 'slug', current: slug },
+        slug: { _type: 'slug', current: `${slug}-${postId}` },
         publishedAt: publishedDate.toISOString(),
         body: body,
+
+        // --- 2. นำข้อมูลใหม่มาใส่ใน Document ---
+        excerpt: excerpt,
+        focusKeyword: postMeta['rank_math_focus_keyword'] || '',
+        seo: {
+          _type: 'seo',
+          title: postMeta['rank_math_title'] || title,
+          description: postMeta['rank_math_description'] || excerpt,
+        },
+        // --------------------------------------
       };
 
       fs.appendFileSync(outputFilename, JSON.stringify(doc) + '\n');
