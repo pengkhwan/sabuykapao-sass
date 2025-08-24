@@ -6,61 +6,86 @@ import { client } from '../lib/sanityClient.js';
 import { PortableText } from 'astro-portabletext';
 import SanityImage from '../components/SanityImage.astro';
 
-// Import Components ที่อาจจะได้ใช้ทั้งหมด
+// Components
 import ProductGallery from '../components/ProductGallery.svelte';
 import PurchaseBox from '../components/PurchaseBox.astro';
 import ProductSchema from '../components/ProductSchema.astro';
 
-// 1. getStaticPaths: ดึง slug ทั้งหมดที่จำเป็น
+// 1) getStaticPaths
 export async function getStaticPaths() {
   const query = `*[_type in ["product", "article", "portfolio"] && defined(slug.current)][].slug.current`;
   const slugs = await client.fetch(query);
-  return slugs.map((slug) => ({
-    params: { slug: slug },
-  }));
+  return slugs.map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
 
-// 2. Query ใหม่: ดึงข้อมูลโดยไม่สน _type แต่ขอ _type และข้อมูลที่จำเป็นทั้งหมดติดมาด้วย
+// 2) Query หลัก + สินค้าแนะนำ (category ร่วมกัน)
 const query = `*[_type in ["product", "article", "portfolio"] && slug.current == $slug][0]{
   ...,
+
+  // รูปหลัก / แกลเลอรี
   "mainImageUrl": image.asset->url,
+  "mainImageAlt": coalesce(image.alt, title),
   "gallery": gallery[]{ _key, "url": asset->url, alt },
+
+  // หมวดหมู่ (ทั้ง deref และ id)
   "categories": categories[]->{ title, "slug": slug.current },
+  "categoryIds": categories[]._ref,
+
+  // SEO OG image
   "ogImageUrl": seo.ogImage.asset->url,
+
+  // วิดีโอ
+  "youtubeUrl": coalesce(youtubeUrl, videoUrl),
+
+  // บทความ (article)
   featuredImage {
     alt,
-    asset-> {
-      ...,
-      metadata {
-        dimensions
-      }
-    }
+    asset-> { ..., metadata { dimensions } }
+  },
+
+  // สินค้าแนะนำ: มีหมวดหมู่ร่วมกัน และไม่ใช่ตัวเอง
+  "related": *[
+    _type == "product" &&
+    slug.current != $slug &&
+    count(categories[@._ref in ^.categoryIds]) > 0
+  ][0...6]{
+    title,
+    "slug": slug.current,
+    "imageUrl": image.asset->url,
+    price,
+    shortDescription
   }
 }`;
 const data = await client.fetch(query, { slug });
 
 if (!data) return Astro.redirect('/404');
 
-// แก้ไขชื่อฟิลด์ตาม Schema ล่าสุด
+// ชื่อ/คำอธิบาย
 const pageTitle = data.seo?.title || data.title;
 const pageDescription = data.seo?.description || data.excerpt || data.shortDescription || '';
 
-// สร้าง object ของ components สำหรับ PortableText
+// PortableText components
 const components = {
-  type: {
-    image: SanityImage, // บอกให้ PortableText ใช้ SanityImage.astro เมื่อเจอรูปภาพ (type="body" เป็น default)
-  },
+  type: { image: SanityImage },
 };
----
 
+// ===== helper: ดึง YouTube ID ได้หลายรูปแบบ =====
+function getYouTubeId(u?: string) {
+  if (!u) return null;
+  const s = String(u);
+  const m = s.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|embed\/|v\/|watch\?v=|watch\?.+&v=))([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+const ytId = getYouTubeId(data.youtubeUrl);
+---
 <Layout 
   title={pageTitle}
   description={pageDescription}
   ogImage={data.ogImageUrl || data.mainImageUrl}
 >
-  {/* ============== ส่วนแสดงผลสำหรับ PRODUCT ============== */}
+  {/* ============== PRODUCT ============== */}
   {data._type === 'product' && (
     <Fragment>
       <ProductSchema product={data} />
@@ -69,72 +94,138 @@ const components = {
           <nav class="breadcrumbs">
             <a href="/">หน้าแรก</a>
             <span>/</span>
-            {data.categories?.[0] &&
+            {data.categories?.[0] && (
               <a href={`/shop/${data.categories[0].slug}`}>{data.categories[0].title}</a>
-            }
+            )}
           </nav>
+
           <div class="product-layout-grid">
             <div class="product-col-gallery">
-              <ProductGallery client:load mainImage={{ url: data.mainImageUrl, alt: data.image?.alt || data.title }} galleryImages={data.gallery} />
+              <ProductGallery
+                client:load
+                mainImage={{ url: data.mainImageUrl, alt: data.mainImageAlt || data.title }}
+                galleryImages={data.gallery}
+              />
             </div>
+
             <div class="product-col-info">
               <h1>{data.title}</h1>
+
               <div class="category-tags">
                 <span class="label">หมวดหมู่:</span>
                 {data.categories?.map(cat => <a href={`/shop/${cat.slug}`}>{cat.title}</a>)}
               </div>
-              <p class="short-description">{data.shortDescription}</p>
-              {data.features &&
+
+              {data.shortDescription && <p class="short-description">{data.shortDescription}</p>}
+
+              {Array.isArray(data.features) && data.features.length > 0 && (
                 <ul class="features-list">
                   {data.features.map(feature => (
                     <li>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0 -16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0 -16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                      </svg>
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
-              }
+              )}
             </div>
+
             <div class="product-col-purchase">
               <PurchaseBox product={data} />
             </div>
           </div>
+
           <div class="description-section">
             <h2>รายละเอียดสินค้า</h2>
-            {data.description && <div class="prose"><PortableText value={data.description} components={components} /></div>}
-            {/* ... ส่วนที่เหลือของ Product ... */}
+            {data.description && (
+              <div class="prose">
+                <PortableText value={data.description} components={components} />
+              </div>
+            )}
+
+            {/* วิดีโอ YouTube */}
+            {ytId && (
+              <div class="video-container">
+                <h3>วิดีโอประกอบสินค้า</h3>
+                <iframe
+                  src={`https://www.youtube.com/embed/${ytId}`}
+                  title="วิดีโอ YouTube"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+            )}
+
+            {/* กล่องการซื้อ (ด้านล่าง) */}
+            <div class="bottom-purchase-box">
+              <PurchaseBox product={data} />
+            </div>
+
+            {/* สินค้าแนะนำ/ใกล้เคียง */}
+            {Array.isArray(data.related) && data.related.length > 0 && (
+              <section class="related-products">
+                <h2>สินค้าแนะนำ</h2>
+                <div class="related-grid">
+                  {data.related.map(item => (
+                    <a class="related-card" href={`/${item.slug}`} aria-label={item.title}>
+                      {item.imageUrl && (
+                        <div class="thumb">
+                          <img
+                            src={item.imageUrl}
+                            alt={item.title}
+                            loading="lazy"
+                            width="360"
+                            height="360"
+                          />
+                        </div>
+                      )}
+                      <div class="related-info">
+                        <h3>{item.title}</h3>
+                        {typeof item.price === 'number' && (
+                          <div class="price">{new Intl.NumberFormat('th-TH').format(item.price)} บาท</div>
+                        )}
+                        {item.shortDescription && <p class="desc">{item.shortDescription}</p>}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </div>
       </main>
     </Fragment>
   )}
 
-  {/* ============== ส่วนแสดงผลสำหรับ ARTICLE (แก้ไขล่าสุด) ============== */}
+  {/* ============== ARTICLE ============== */}
   {data._type === 'article' && (
     <main class="container article-page">
       <div class="article-header">
         <h1>{data.title}</h1>
 
-        {/* --- แสดงผล Featured Image พร้อมระบุ type="featured" --- */}
         {data.featuredImage && (
           <div class="featured-image">
             <SanityImage node={data.featuredImage} type="featured" />
           </div>
         )}
       </div>
-      
+
       <div class="prose">
         <PortableText value={data.body} components={components} />
       </div>
     </main>
   )}
 
-  {/* ============== ส่วนแสดงผลสำหรับ PORTFOLIO ============== */}
+  {/* ============== PORTFOLIO ============== */}
   {data._type === 'portfolio' && (
     <main class="container">
       <h1>{data.title}</h1>
       <p>นี่คือหน้า Portfolio</p>
-       {data.body && <div class="prose"><PortableText value={data.body} components={components} /></div>}
+      {data.body && <div class="prose"><PortableText value={data.body} components={components} /></div>}
     </main>
   )}
 </Layout>

@@ -1,33 +1,75 @@
 // sanity/schemaTypes/article.js
 import {defineField, defineType} from 'sanity'
 
+/**
+ * หมายเหตุ:
+ * - body: Portable Text รองรับ inline image (+ alt, caption)
+ * - slug: บังคับอังกฤษเท่านั้น + slugify ตามกติกา (ตัดความยาว ~60)
+ * - excerpt: ใช้เป็น meta/preview แนะนำไม่เกิน 160 ตัวอักษร
+ * - references: list ของ {label, url}
+ * - toc: list ของหัวข้อ {label, anchorId} (แก้ไขได้เอง หรือ generate ภายนอก)
+ * - faq: list Q&A สำหรับ FAQ schema
+ * - featuredImage: มี alt + caption
+ * - youtubeUrl: optional พร้อมตรวจรูปแบบ URL พื้นฐาน
+ * - seo: ใช้ object จาก seo.js ของคุณ (มีอยู่แล้ว)
+ */
+
+const slugifyEN = (input) =>
+  (input || '')
+    .toString()
+    .toLowerCase()
+    // remove accents/diacritics
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // keep a-z, 0-9, space & hyphen only
+    .replace(/[^a-z0-9\s-]/g, '')
+    // collapse whitespace to single hyphen
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 60)
+
 export default defineType({
   name: 'article',
   title: 'Articles',
   type: 'document',
-  
+
   groups: [
     { name: 'content', title: 'เนื้อหาหลัก', default: true },
+    { name: 'media', title: 'สื่อ' },
+    { name: 'extras', title: 'เสริม (TOC / FAQ / References)' },
     { name: 'seo', title: 'SEO' },
   ],
 
   fields: [
-    // --- ฟิลด์ในแท็บ "เนื้อหาหลัก" ---
+    // --- เนื้อหาหลัก ---
     defineField({
       name: 'title',
       title: 'Article Title',
       type: 'string',
       group: 'content',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().min(3).warning('ควรยาวอย่างน้อย 3 ตัวอักษร'),
     }),
+
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'Slug (English only)',
       type: 'slug',
-      options: { source: 'title', maxLength: 96 },
+      options: {
+        source: 'title',
+        maxLength: 60,
+        slugify: slugifyEN,
+      },
       group: 'content',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required()
+          .custom((slug) => {
+            if (!slug || !slug.current) return 'ต้องมี slug'
+            const ok = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug.current)
+            return ok || 'slug ต้องเป็นอังกฤษล้วน a–z, 0–9 และขีดกลาง (-) เท่านั้น'
+          }),
     }),
+
     defineField({
       name: 'publishedAt',
       title: 'Published at',
@@ -36,52 +78,42 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // --- จุดที่แก้ไข ---
-    defineField({
-      name: 'featuredImage',
-      title: 'Featured Image',
-      type: 'image',
-      description: 'รูปภาพหลักของบทความ (ภาพปก)',
-      options: {
-        hotspot: true,
-      },
-      // เพิ่ม fields เข้าไปเพื่อให้มีช่อง alt
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alternative text (คำอธิบายรูปภาพ)',
-          type: 'string',
-          description: 'ข้อความอธิบายรูปภาพสำหรับ SEO และผู้พิการทางสายตา',
-          validation: (Rule) => Rule.required(), // บังคับกรอก alt text
-        })
-      ],
-      group: 'content',
-      validation: (Rule) => Rule.required(),
-    }),
-    // --------------------
-
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
       type: 'text',
       rows: 4,
-      description: 'เนื้อหาย่อสำหรับแสดงในหน้าแรกหรือการ์ดบทความ',
+      description: 'เนื้อหาย่อสำหรับการ์ดบทความ/SEO (แนะนำ ≤ 160 ตัวอักษร)',
       group: 'content',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required()
+          .min(30).warning('สั้นไป ควรมากกว่า ~30 ตัวอักษร')
+          .max(220).warning('ยาวเกินไป ควรไม่เกิน ~160–180 สำหรับ SEO'),
     }),
+
     defineField({
       name: 'body',
       title: 'Body',
       type: 'array',
-      options: { layout: 'grid' },
+      options: { layout: 'block' },
       of: [
         { type: 'block' },
         {
           type: 'image',
           options: { hotspot: true },
           fields: [
-            defineField({ name: 'alt', title: 'Alternative text', type: 'string' }),
-            defineField({ name: 'caption', title: 'Caption', type: 'string' }),
+            defineField({
+              name: 'alt',
+              title: 'Alternative text',
+              type: 'string',
+              validation: (Rule) =>
+                Rule.required().min(3).warning('ควรใส่ alt เพื่อ SEO และการเข้าถึง'),
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
           ],
         },
       ],
@@ -89,18 +121,140 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // --- ฟิลด์ในแท็บ "SEO" ---
+    // --- สื่อ (ภาพ/วิดีโอ) ---
+    defineField({
+      name: 'featuredImage',
+      title: 'Featured Image',
+      type: 'image',
+      description: 'รูปภาพหลักของบทความ (ภาพปก + ใช้เป็น OG ได้)',
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alternative text (คำอธิบายรูปภาพ)',
+          type: 'string',
+          description: 'สำหรับ SEO และการเข้าถึง',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Caption',
+          type: 'string',
+        }),
+      ],
+      group: 'media',
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
+      name: 'youtubeUrl',
+      title: 'YouTube URL (optional)',
+      type: 'url',
+      description: 'ลิงก์วิดีโอ YouTube ที่เกี่ยวข้อง (ถ้ามี)',
+      group: 'media',
+      validation: (Rule) =>
+        Rule.uri({
+          allowRelative: false,
+          scheme: ['http', 'https'],
+        }).warning('ตรวจรูปแบบ URL ให้ถูกต้อง'),
+    }),
+
+    // --- เสริม (TOC / FAQ / References) ---
+    defineField({
+      name: 'toc',
+      title: 'Table of Contents',
+      group: 'extras',
+      type: 'array',
+      of: [
+        defineField({
+          name: 'tocItem',
+          title: 'TOC Item',
+          type: 'object',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string' }),
+            defineField({
+              name: 'anchorId',
+              title: 'Anchor ID',
+              type: 'string',
+              description: 'เช่น h2-introduction (สำหรับลิงก์ข้ามในหน้า)',
+            }),
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'anchorId' },
+          },
+        }),
+      ],
+    }),
+
+    defineField({
+      name: 'faq',
+      title: 'FAQ (Q&A)',
+      group: 'extras',
+      type: 'array',
+      of: [
+        defineField({
+          name: 'qa',
+          title: 'Q&A',
+          type: 'object',
+          fields: [
+            defineField({ name: 'question', title: 'Question', type: 'string' }),
+            defineField({ name: 'answer', title: 'Answer', type: 'text' }),
+          ],
+          preview: {
+            select: { title: 'question', subtitle: 'answer' },
+          },
+        }),
+      ],
+    }),
+
+    defineField({
+      name: 'references',
+      title: 'External References',
+      group: 'extras',
+      type: 'array',
+      of: [
+        defineField({
+          name: 'refItem',
+          title: 'Reference',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'label',
+              title: 'Text/Label',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'url',
+              title: 'URL',
+              type: 'url',
+              validation: (Rule) =>
+                Rule.required().uri({
+                  allowRelative: false,
+                  scheme: ['http', 'https'],
+                }),
+            }),
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'url' },
+          },
+        }),
+      ],
+    }),
+
+    // --- SEO ---
     defineField({
       name: 'focusKeyword',
       title: 'Focus Keyword',
       type: 'string',
-      description: 'คำค้นหาหลักของบทความนี้ (จาก Rank Math)',
+      description: 'คำค้นหาหลักของบทความนี้',
       group: 'seo',
     }),
+
     defineField({
       name: 'seo',
       title: 'SEO Settings',
-      type: 'seo',
+      type: 'seo', // ใช้ schemaTypes/seo.js ของคุณ
       group: 'seo',
       validation: (Rule) => Rule.required(),
     }),
@@ -110,6 +264,7 @@ export default defineType({
     select: {
       title: 'title',
       media: 'featuredImage',
+      subtitle: 'excerpt',
     },
   },
 })

@@ -5,22 +5,61 @@ interface Props {
 }
 const { product } = Astro.props;
 
-const facebookPageUsername = "marah5g";
-const lineOA_ID = "@marah5g";
-const message = `สวัสดีครับ สนใจสินค้า: ${product.name}`;
+// ชื่อสินค้าที่ใช้ในข้อความ (กันเคสไม่มี name)
+const productTitle =
+  product?.name ??
+  product?.title ??
+  'สินค้าของทางร้าน';
+
+// ฟอร์แมตราคาและ fallback
+const isNumber = typeof product?.price === 'number' && !Number.isNaN(product.price);
+const priceText = isNumber
+  ? `${new Intl.NumberFormat('th-TH').format(product.price)} บาท`
+  : 'สอบถามราคา';
+
+// ช่องทางติดต่อ
+const facebookPageUsername = 'marah5g';
+const lineOA_ID = '@marah5g';
+const message = `สวัสดีครับ สนใจสินค้า: ${productTitle}`;
 const encodedMessage = encodeURIComponent(message);
-const facebookLink = `http://m.me/${facebookPageUsername}?ref=${encodedMessage}`;
-const lineLink = `https://line.me/R/oaMessage/${lineOA_ID}/?text=${encodedMessage}`;
+
+// ใช้ https และกันอักขระพิเศษด้วย encodeURIComponent
+const facebookLink = `https://m.me/${facebookPageUsername}?ref=${encodedMessage}`;
+const lineLink = `https://line.me/R/oaMessage/${encodeURIComponent(lineOA_ID)}/?text=${encodedMessage}`;
 ---
-<div class="purchase-box">
-  <div class="price">{product.price} บาท</div>
-  
-  {product.shopeeUrl && <a href={product.shopeeUrl} target="_blank" rel="noopener noreferrer" class="purchase-button shopee"><img src="/icons/icon-shopee.svg" alt="" width="24" height="24"/><span>สั่งซื้อผ่าน Shopee</span></a>}
-  {product.lazadaUrl && <a href={product.lazadaUrl} target="_blank" rel="noopener noreferrer" class="purchase-button lazada"><img src="/icons/icon-lazada.svg" alt="" width="24" height="24"/><span>สั่งซื้อผ่าน Lazada</span></a>}
-  {product.tiktokUrl && <a href={product.tiktokUrl} target="_blank" rel="noopener noreferrer" class="purchase-button tiktok"><img src="/icons/icon-tiktok-color.svg" alt="" width="24" height="24"/><span>สั่งซื้อผ่าน TikTok</span></a>}
-  
-  <a href={facebookLink} target="_blank" rel="noopener noreferrer" class="purchase-button facebook"><img src="/icons/icon-facebook-messenger.svg" alt="" width="24" height="24"/><span>สั่งซื้อผ่าน Facebook</span></a>
-  <a href={lineLink} target="_blank" rel="noopener noreferrer" class="purchase-button line"><img src="/icons/icon-line-color.svg" alt="" width="24" height="24"/><span>สั่งซื้อผ่าน Line</span></a>
+<div class="purchase-box" aria-label="กล่องสั่งซื้อสินค้า">
+  <div class="price">{priceText}</div>
+
+  {product?.shopeeUrl && (
+    <a href={product.shopeeUrl} target="_blank" rel="noopener noreferrer" class="purchase-button shopee" aria-label="สั่งซื้อผ่าน Shopee">
+      <img src="/icons/icon-shopee.svg" alt="" width="24" height="24" />
+      <span>สั่งซื้อผ่าน Shopee</span>
+    </a>
+  )}
+
+  {product?.lazadaUrl && (
+    <a href={product.lazadaUrl} target="_blank" rel="noopener noreferrer" class="purchase-button lazada" aria-label="สั่งซื้อผ่าน Lazada">
+      <img src="/icons/icon-lazada.svg" alt="" width="24" height="24" />
+      <span>สั่งซื้อผ่าน Lazada</span>
+    </a>
+  )}
+
+  {product?.tiktokUrl && (
+    <a href={product.tiktokUrl} target="_blank" rel="noopener noreferrer" class="purchase-button tiktok" aria-label="สั่งซื้อผ่าน TikTok">
+      <img src="/icons/icon-tiktok-color.svg" alt="" width="24" height="24" />
+      <span>สั่งซื้อผ่าน TikTok</span>
+    </a>
+  )}
+
+  <a href={facebookLink} target="_blank" rel="noopener noreferrer" class="purchase-button facebook" aria-label="สั่งซื้อผ่าน Facebook Messenger">
+    <img src="/icons/icon-facebook-messenger.svg" alt="" width="24" height="24" />
+    <span>สั่งซื้อผ่าน Facebook</span>
+  </a>
+
+  <a href={lineLink} target="_blank" rel="noopener noreferrer" class="purchase-button line" aria-label="สั่งซื้อผ่าน LINE">
+    <img src="/icons/icon-line-color.svg" alt="" width="24" height="24" />
+    <span>สั่งซื้อผ่าน Line</span>
+  </a>
 </div>
 
 <style lang="scss">
@@ -29,7 +68,7 @@ const lineLink = `https://line.me/R/oaMessage/${lineOA_ID}/?text=${encodedMessag
 
   .purchase-box {
     border: 1px solid var.$clr-bg-secondary;
-    background-color: var.$clr-bg-box; /* เพิ่ม: เปลี่ยนสีพื้นหลัง */
+    background-color: var.$clr-bg-box;
     padding: 1.5rem;
     border-radius: 12px;
     text-align: center;
@@ -40,6 +79,7 @@ const lineLink = `https://line.me/R/oaMessage/${lineOA_ID}/?text=${encodedMessag
     color: var.$clr-text-heading;
     font-family: var.$font-heading;
     margin-bottom: 1.5rem;
+    line-height: 1.2;
   }
   .purchase-button {
     display: flex;

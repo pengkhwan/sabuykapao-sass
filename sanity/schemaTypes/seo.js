@@ -1,8 +1,6 @@
-// sanity/schemaTypes/seo.js
 import {defineField, defineType} from 'sanity'
 
 export default defineType({
-  // --- ใช้ defineType ครอบ schema ทั้งหมด ---
   name: 'seo',
   title: 'SEO & Social',
   type: 'object',
@@ -11,69 +9,50 @@ export default defineType({
     { name: 'advanced', title: 'Advanced Settings' },
   ],
   fields: [
-    // --- ใช้ defineField สำหรับแต่ละฟิลด์ ---
     defineField({
-      name: 'title', // <-- ปรับชื่อให้สั้นลง
+      name: 'seoTitle',
       title: 'SEO Title (Meta Title)',
       type: 'string',
-      description: 'ชื่อเรื่องที่จะแสดงบน Google (ถ้าเว้นว่าง จะใช้ชื่อหลักของหน้าแทน)',
-      validation: (Rule) => Rule.max(60).warning('ควรมีความยาวไม่เกิน 60 ตัวอักษร'),
+      description: 'ถ้าเว้นว่าง ระบบ/หน้าเพจอาจ fallback เป็น title',
+      validation: (Rule) => Rule.max(60).warning('ควรยาวไม่เกิน 60 ตัวอักษร'),
     }),
     defineField({
-      name: 'description', // <-- ปรับชื่อให้สั้นลง
+      name: 'seoDescription',
       title: 'SEO Description (Meta Description)',
       type: 'text',
-      description: 'คำอธิบายสั้นๆ ที่จะแสดงบน Google (ประมาณ 155-160 ตัวอักษร)',
       rows: 3,
-      validation: (Rule) => Rule.required().error('กรุณาใส่ Meta Description สำหรับ SEO').max(160).warning('ควรมีความยาวไม่เกิน 160 ตัวอักษร'),
+      description: 'แนะนำ 155–160 ตัวอักษร',
+      validation: (Rule) => Rule.max(160).warning('ควรยาวไม่เกิน 160 ตัวอักษร'),
     }),
     defineField({
       name: 'ogTitle',
       title: 'Social Title (Open Graph)',
       type: 'string',
-      description: 'ชื่อเรื่องที่จะแสดงตอนแชร์ลงโซเชียล (ถ้าเว้นว่าง จะใช้ SEO Title แทน)',
       fieldset: 'social',
-      validation: (Rule) => Rule.max(60).warning('ควรมีความยาวไม่เกิน 60 ตัวอักษร'),
+      validation: (Rule) => Rule.max(60).warning('ควรยาวไม่เกิน 60 ตัวอักษร'),
     }),
     defineField({
       name: 'ogDescription',
       title: 'Social Description (Open Graph)',
       type: 'text',
-      description: 'คำอธิบายที่จะแสดงตอนแชร์ลงโซเชียล (ถ้าเว้นว่าง จะใช้ SEO Description แทน)',
       rows: 3,
       fieldset: 'social',
-      validation: (Rule) => Rule.max(160).warning('ควรมีความยาวไม่เกิน 160 ตัวอักษร'),
+      validation: (Rule) => Rule.max(160).warning('ควรยาวไม่เกิน 160 ตัวอักษร'),
     }),
     defineField({
       name: 'ogImage',
       title: 'Social Image (Open Graph)',
       type: 'image',
-      description: 'รูปภาพที่จะแสดงตอนแชร์ (แนะนำขนาด 1200x630 pixels)',
       fieldset: 'social',
-      options: {
-        hotspot: true,
-      },
+      options: { hotspot: true },
       fields: [
-        defineField({ // <-- ใช้ defineField กับฟิลด์ย่อยด้วย
-          name: 'alt',
-          title: 'Alternative text',
-          type: 'string',
-          description: 'คำอธิบายรูปภาพสำหรับโซเชียลมีเดีย',
-        })
+        defineField({ name: 'alt', title: 'Alternative text', type: 'string' })
       ]
     }),
     defineField({
-      name: 'canonicalUrl',
-      title: 'Canonical URL',
-      type: 'url',
-      description: '(ไม่จำเป็น) ใส่ URL หลักของหน้านี้ หากมีหลาย URL ที่เข้าถึงเนื้อหาเดียวกันได้',
-      fieldset: 'advanced',
-    }),
-    defineField({
-      name: 'noIndexPage',
+      name: 'noIndex',
       title: 'Hide this page from search engines (noindex)',
       type: 'boolean',
-      description: 'ติ๊กถูกเพื่อบอก Google ไม่ให้เก็บหน้านี้ไปแสดงผล',
       fieldset: 'advanced',
       initialValue: false,
     }),
@@ -81,7 +60,6 @@ export default defineType({
       name: 'noFollowLinks',
       title: 'Do not follow links on this page (nofollow)',
       type: 'boolean',
-      description: 'ติ๊กถูกเพื่อบอก Google ไม่ให้คลิกตามลิงก์ในหน้านี้',
       fieldset: 'advanced',
       initialValue: false,
     }),

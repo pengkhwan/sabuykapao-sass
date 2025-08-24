@@ -3,36 +3,83 @@
 import { SEO } from "astro-seo";
 import type { Props as AstroSeoProps } from "astro-seo";
 
-interface Props extends AstroSeoProps {}
+interface Props extends AstroSeoProps {
+  /** URL ของรูปหลักของหน้า (เช่น จาก Sanity mainImage) */
+  mainImage?: string;
+  /** บังคับชนิด OG ถ้าไม่ได้ส่งมา (เช่น 'article' หรือ 'website') */
+  ogType?: string;
+  /** รูปสำรองสุดท้าย ถ้าไม่เจออะไรเลย */
+  ogFallbackImage?: string;
+}
 
-const { 
-  title, 
+const props = Astro.props as Props;
+
+// base fields
+const title =
+  props.title ??
+  props.openGraph?.basic?.title ??
+  props.titleDefault ??
+  " ";
+
+const description = props.description;
+const canonical = props.canonical;
+
+// สร้างลำดับ fallback ของรูป OG
+const ogImage =
+  (props.openGraph?.basic?.image as string | undefined) ??
+  (props.openGraph?.image?.url as string | undefined) ??
+  props.mainImage ??
+  props.ogFallbackImage ??
+  "/og-default.jpg";
+
+const ogType = props.openGraph?.basic?.type ?? props.ogType ?? "website";
+const ogAlt = props.openGraph?.image?.alt ?? title;
+
+// เตรียม props สำหรับ <SEO />, ใส่ค่า default ให้เตือนน้อยลง
+const seoProps: Record<string, any> = {
+  ...props,
+  surpressWarnings: props.surpressWarnings ?? true,
+  title,
   description,
   canonical,
-  openGraph,
-  ...rest
-} = Astro.props;
----
-<SEO
-  title={title}
-  description={description}
-  canonical={canonical}
-  openGraph={{
+};
+
+// ไม่ให้ส่ง openGraph/twitter ซ้ำซ้อน ก่อนประกอบใหม่
+delete seoProps.openGraph;
+delete seoProps.twitter;
+
+// ส่ง openGraph ก็ต่อเมื่อครบ title/type/image แล้วเท่านั้น (กัน throw)
+if (title && ogType && ogImage) {
+  seoProps.openGraph = {
     basic: {
-      title: openGraph?.basic.title || title,
-      type: "website",
-      image: openGraph?.basic.image,
+      title,
+      type: ogType,
+      image: ogImage,
+      url:
+        props.openGraph?.basic?.url ??
+        (typeof Astro.url?.href === "string" ? Astro.url.href : undefined),
     },
     image: {
-      alt: openGraph?.image?.alt || title,
+      alt: ogAlt,
+      // ถ้ามีค่าจากต้นทางก็รวมมาด้วย
+      ...(props.openGraph?.image ?? {}),
     },
-  }}
-  twitter={{
-    card: "summary_large_image",
-    title: openGraph?.basic.title || title,
-    description: description,
-    image: openGraph?.basic.image,
-    imageAlt: openGraph?.image?.alt || title,
-  }}
-  {...rest}
-/>
+    // ส่ง optional/article กลับไปถ้าต้นทางมี
+    ...(props.openGraph?.optional ? { optional: props.openGraph.optional } : {}),
+    ...(props.openGraph?.article ? { article: props.openGraph.article } : {}),
+  };
+}
+
+// Twitter card ใช้ชุดเดียวกับ OG โดยอัตโนมัติ
+seoProps.twitter = {
+  card: props.twitter?.card ?? "summary_large_image",
+  title,
+  description,
+  image: ogImage,
+  imageAlt: ogAlt,
+  site: props.twitter?.site,
+  creator: props.twitter?.creator,
+};
+---
+
+<SEO {...seoProps} />

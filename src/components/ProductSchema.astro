@@ -2,31 +2,87 @@
 // src/components/ProductSchema.astro
 interface Props {
   product: any;
+  baseUrl?: string; // เผื่ออยากกำหนด origin เอง เช่น https://example.com
 }
-const { product } = Astro.props;
+const { product, baseUrl } = Astro.props;
 
-// สร้างข้อมูล JSON-LD สำหรับ Schema.org
-const productSchema = {
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": product.name,
-  // แก้ไข: ใช้ mainImageUrl โดยตรง
-  "image": product.mainImageUrl ? [product.mainImageUrl] : [], 
-  "description": product.shortDescription,
-  "sku": product._id, // ใช้ ID ของ Sanity เป็น SKU
-  "brand": {
-    "@type": "Brand",
-    "name": "SabuyKapao"
-  },
-  // ตรวจสอบว่ามี product.price ก่อนใช้งาน
-  "offers": product.price ? {
-    "@type": "Offer",
-    "url": new URL(`/${product.slug.current}`, Astro.site).href,
-    "priceCurrency": "THB",
-    "price": product.price,
-    "availability": "https://schema.org/InStock",
-    "itemCondition": "https://schema.org/NewCondition"
-  } : undefined // ถ้าไม่มีราคา ก็ไม่ต้องใส่ข้อมูล offer
+// URL หน้าปัจจุบัน / ตกแต่งสำรองจาก site+slug
+const site = (Astro.site ?? baseUrl)?.toString().replace(/\/$/, '') || '';
+const pageUrl =
+  (typeof Astro.url?.href === 'string' && Astro.url.href) ||
+  (site && product?.slug?.current ? `${site}/${product.slug.current}` : undefined);
+
+// ชื่อ/คำอธิบาย
+const name =
+  product?.seo?.title ||
+  product?.title ||
+  product?.name ||
+  '';
+
+const description =
+  product?.seo?.description ||
+  product?.excerpt ||
+  product?.shortDescription ||
+  '';
+
+// รวมรูป: mainImageUrl + gallery (ถ้ามี)
+const images: string[] = [];
+if (product?.mainImageUrl) images.push(product.mainImageUrl);
+if (Array.isArray(product?.gallery)) {
+  for (const g of product.gallery) if (g?.url) images.push(g.url);
+}
+
+// ===== Product JSON-LD (minimal, optional fields) =====
+const productLD: Record<string, any> = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  ...(name ? { name } : {}),
+  ...(images.length ? { image: images.slice(0, 6) } : {}),
+  ...(description ? { description } : {}),
+  ...(product?._id ? { sku: product._id } : {}),
+  ...(pageUrl ? { url: pageUrl } : {}),
+};
+
+// เพิ่ม offers เฉพาะเมื่อมีราคาเป็นตัวเลขจริง
+if (typeof product?.price === 'number' && !Number.isNaN(product.price)) {
+  productLD.offers = {
+    '@type': 'Offer',
+    priceCurrency: 'THB',
+    price: String(product.price),
+    ...(pageUrl ? { url: pageUrl } : {}),
+    availability: 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+  };
+}
+
+// ===== BreadcrumbList JSON-LD =====
+const crumbs: Array<{ name: string; item?: string }> = [{ name: 'หน้าแรก', item: site || undefined }];
+
+// หมวดหมู่แรก (ถ้ามี)
+const firstCat = product?.categories?.[0];
+if (firstCat?.title && firstCat?.slug && site) {
+  crumbs.push({ name: firstCat.title, item: `${site}/shop/${firstCat.slug}` });
+}
+
+// สินค้าปัจจุบัน
+if (name && pageUrl) {
+  crumbs.push({ name, item: pageUrl });
+}
+
+const breadcrumbLD = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    ...(c.item ? { item: c.item } : {}),
+  })),
 };
 ---
-<script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+{product?._type === 'product' && (
+  <>
+    <script type="application/ld+json" set:html={JSON.stringify(productLD)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLD)}></script>
+  </>
+)}
