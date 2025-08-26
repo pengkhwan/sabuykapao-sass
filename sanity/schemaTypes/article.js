@@ -18,12 +18,9 @@ const slugifyEN = (input) =>
   (input || '')
     .toString()
     .toLowerCase()
-    // remove accents/diacritics
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    // keep a-z, 0-9, space & hyphen only
     .replace(/[^a-z0-9\s-]/g, '')
-    // collapse whitespace to single hyphen
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
@@ -95,7 +92,6 @@ export default defineType({
       name: 'body',
       title: 'Body',
       type: 'array',
-      options: { layout: 'block' },
       of: [
         { type: 'block' },
         {
@@ -242,6 +238,49 @@ export default defineType({
       ],
     }),
 
+    // --- AI Preview (สำหรับผลลัพธ์จาก Inngest/Gemini) ---
+    defineField({
+      name: 'aiPreview',
+      title: 'AI Preview',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      group: 'extras',
+      fields: [
+        defineField({ name: 'event', title: 'Event', type: 'string', readOnly: true }),
+        defineField({ name: 'createdAt', title: 'Created At', type: 'datetime', readOnly: true }),
+        defineField({
+          name: 'meta',
+          title: 'Meta',
+          type: 'object',
+          readOnly: true,
+          fields: [defineField({ name: 'userId', title: 'User ID', type: 'string' })],
+        }),
+        defineField({
+          name: 'result',
+          title: 'Result',
+          type: 'object',
+          options: { collapsible: true, collapsed: true },
+          fields: [
+            defineField({
+              name: 'toc',
+              title: 'Generated TOC',
+              type: 'array',
+              of: [
+                defineField({
+                  type: 'object',
+                  fields: [
+                    defineField({ name: 'text', title: 'Text', type: 'string' }),
+                    defineField({ name: 'anchor', title: 'Anchor', type: 'string' }),
+                  ],
+                  preview: { select: { title: 'text', subtitle: 'anchor' } },
+                }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    }),
+
     // --- SEO ---
     defineField({
       name: 'focusKeyword',
@@ -254,7 +293,7 @@ export default defineType({
     defineField({
       name: 'seo',
       title: 'SEO Settings',
-      type: 'seo', // ใช้ schemaTypes/seo.js ของคุณ
+      type: 'seo',
       group: 'seo',
       validation: (Rule) => Rule.required(),
     }),

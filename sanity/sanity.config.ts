@@ -1,9 +1,12 @@
 // sanity/sanity.config.js
 import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
+import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
 
-// --- ตอนนี้เราจะ Import แค่จาก index.js ที่เดียว ---
+// ปลั๊กอิน AI actions (ไฟล์ JS)
+import aiActions from './src/plugins/ai-actions/index.js'
+
+// schema หลัก
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
@@ -13,10 +16,10 @@ export default defineConfig({
   projectId: 'ik92gukm',
   dataset: 'production',
 
-  plugins: [structureTool(), visionTool()],
+  // เปิดปลั๊กอิน AI
+  plugins: [deskTool(), visionTool(), aiActions()],
 
   schema: {
-    // --- และลงทะเบียนแค่ตัวแปรเดียว ทำให้โค้ดสะอาดมาก ---
     types: schemaTypes,
   },
 })
