@@ -7,11 +7,11 @@ import {defineField, defineType} from 'sanity'
  * - slug: บังคับอังกฤษเท่านั้น + slugify ตามกติกา (ตัดความยาว ~60)
  * - excerpt: ใช้เป็น meta/preview แนะนำไม่เกิน 160 ตัวอักษร
  * - references: list ของ {label, url}
- * - toc: list ของหัวข้อ {label, anchorId} (แก้ไขได้เอง หรือ generate ภายนอก)
+ * - toc: list ของหัวข้อ {label, anchorId}
  * - faq: list Q&A สำหรับ FAQ schema
  * - featuredImage: มี alt + caption
- * - youtubeUrl: optional พร้อมตรวจรูปแบบ URL พื้นฐาน
- * - seo: ใช้ object จาก seo.js ของคุณ (มีอยู่แล้ว)
+ * - youtubeUrl: optional
+ * - seo: ใช้ object จาก seo.js
  */
 
 const slugifyEN = (input) =>
@@ -117,7 +117,7 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // --- สื่อ (ภาพ/วิดีโอ) ---
+    // --- สื่อ ---
     defineField({
       name: 'featuredImage',
       title: 'Featured Image',
@@ -175,9 +175,7 @@ export default defineType({
               description: 'เช่น h2-introduction (สำหรับลิงก์ข้ามในหน้า)',
             }),
           ],
-          preview: {
-            select: { title: 'label', subtitle: 'anchorId' },
-          },
+          preview: { select: { title: 'label', subtitle: 'anchorId' } },
         }),
       ],
     }),
@@ -189,16 +187,23 @@ export default defineType({
       type: 'array',
       of: [
         defineField({
-          name: 'qa',
-          title: 'Q&A',
+          name: 'faqItem',            // ⬅️ ตั้งชื่อชนิดชัดเจน
+          title: 'FAQ Item',
           type: 'object',
           fields: [
-            defineField({ name: 'question', title: 'Question', type: 'string' }),
-            defineField({ name: 'answer', title: 'Answer', type: 'text' }),
+            defineField({
+              name: 'question',
+              title: 'Question',
+              type: 'string',
+              validation: (Rule) => Rule.required().min(3),
+            }),
+            defineField({
+              name: 'answer',
+              title: 'Answer',
+              type: 'text',
+            }),
           ],
-          preview: {
-            select: { title: 'question', subtitle: 'answer' },
-          },
+          preview: { select: { title: 'question', subtitle: 'answer' } },
         }),
       ],
     }),
@@ -231,9 +236,7 @@ export default defineType({
                 }),
             }),
           ],
-          preview: {
-            select: { title: 'label', subtitle: 'url' },
-          },
+          preview: { select: { title: 'label', subtitle: 'url' } },
         }),
       ],
     }),
@@ -273,6 +276,22 @@ export default defineType({
                     defineField({ name: 'anchor', title: 'Anchor', type: 'string' }),
                   ],
                   preview: { select: { title: 'text', subtitle: 'anchor' } },
+                }),
+              ],
+            }),
+            // ⬇️ เพิ่มที่เก็บพรีวิว FAQ จาก AI
+            defineField({
+              name: 'faq',
+              title: 'Generated FAQ',
+              type: 'array',
+              of: [
+                defineField({
+                  type: 'object',
+                  fields: [
+                    defineField({ name: 'question', title: 'Question', type: 'string' }),
+                    defineField({ name: 'answer', title: 'Answer', type: 'text' }),
+                  ],
+                  preview: { select: { title: 'question', subtitle: 'answer' } },
                 }),
               ],
             }),

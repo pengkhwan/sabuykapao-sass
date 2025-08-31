@@ -1,53 +1,34 @@
 ﻿// sanity/src/plugins/ai-actions/index.ts
 import { definePlugin } from 'sanity'
 
-/** ---------- API base (Method B) ----------
- * - ถ้ามี NEXT_PUBLIC_API_BASE ใช้อันนั้น
- * - ถ้าไม่มี ให้เดาจาก window.origin
- *   - ถ้าเจอพอร์ต 3333 (Sanity Studio dev) ให้สลับเป็น 3000 (worker)
- * - บังคับให้ลงท้ายด้วย /api เสมอ
- */
+/** ---------- API base (Method B) ---------- */
 function swapStudioToWorker(origin: string) {
   try {
     const u = new URL(origin)
-    // ปกติเรารัน worker ที่ localhost:3000
     if (u.hostname === 'localhost' && u.port === '3333') {
       return `${u.protocol}//${u.hostname}:3000`
     }
     return origin
   } catch {
-    // fallback เผื่อ browser แปลกๆ
     return origin.includes(':3333') ? origin.replace(':3333', ':3000') : origin
   }
 }
-
 const autodetectBase =
-  typeof window !== 'undefined'
-    ? swapStudioToWorker(window.location.origin)
-    : 'http://localhost:3000'
-
+  typeof window !== 'undefined' ? swapStudioToWorker(window.location.origin) : 'http://localhost:3000'
 function normalizeApiBase(v: string) {
   const s = (v || '').replace(/\/+$/, '')
   return s.endsWith('/api') ? s : `${s}/api`
 }
-
 const RAW_BASE =
-  (typeof process !== 'undefined' && (process as any).env?.NEXT_PUBLIC_API_BASE) ||
-  autodetectBase
-
+  (typeof process !== 'undefined' && (process as any).env?.NEXT_PUBLIC_API_BASE) || autodetectBase
 const API_BASE = normalizeApiBase(RAW_BASE)
 const api = (path: string) => `${API_BASE}/${path.replace(/^\/+/, '')}`
-
-// (optional) log ไว้ดูใน DevTools ว่าชี้ไปไหน
-if (typeof window !== 'undefined') {
-  console.info('[ai-actions] API_BASE =', API_BASE)
-}
+if (typeof window !== 'undefined') console.info('[ai-actions] API_BASE =', API_BASE)
 
 const toPub = (id?: string) => (id && id.startsWith('drafts.') ? id.slice(7) : id || '')
 
 /* ---------------- helpers ---------------- */
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
 async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeout = 15000) {
   const ctrl = new AbortController()
   const id = setTimeout(() => ctrl.abort(), timeout)
@@ -57,49 +38,41 @@ async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, ti
     clearTimeout(id)
   }
 }
-
-async function safeJson(res: Response) {
-  try { return await res.json() } catch { return null }
-}
-
+async function safeJson(res: Response) { try { return await res.json() } catch { return null } }
 async function postJSON(url: string, body: any) {
   try {
     const r = await fetchWithTimeout(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(body),
     })
     const j = await safeJson(r)
     return { ok: r.ok, status: r.status, json: j }
-  } catch (e: any) {
-    return { ok: false, status: 0, json: null, error: e?.message || String(e) }
-  }
+  } catch (e: any) { return { ok: false, status: 0, json: null, error: e?.message || String(e) } }
 }
-
 async function getJSON(url: string) {
   try {
     const r = await fetchWithTimeout(url, { headers: { Accept: 'application/json' } })
     const j = await safeJson(r)
     return { ok: r.ok, status: r.status, json: j }
-  } catch (e: any) {
-    return { ok: false, status: 0, json: null, error: e?.message || String(e) }
-  }
+  } catch (e: any) { return { ok: false, status: 0, json: null, error: e?.message || String(e) } }
 }
-
 async function poll<T>(runner: () => Promise<T | null>, attempts = 8, delayMs = 800) {
-  for (let i = 0; i < attempts; i++) {
-    const r = await runner()
-    if (r) return r
-    await sleep(delayMs)
-  }
+  for (let i = 0; i < attempts; i++) { const r = await runner(); if (r) return r; await sleep(delayMs) }
   return null
 }
-
 function pickId(props: any) {
   return props?.id || props?.documentId || props?.draft?._id || props?.published?._id || ''
 }
+// ⬇️ อัปเดต: รองรับทั้ง product.name และ article.title
 function pickName(props: any) {
-  return props?.draft?.name || props?.published?.name || ''
+  return (
+    props?.draft?.name || props?.published?.name ||
+    props?.draft?.title || props?.published?.title ||
+    ''
+  )
+}
+function pickSlug(props: any) {
+  return props?.draft?.slug?.current || props?.published?.slug?.current || ''
 }
 
 /* -------- calls -------- */
@@ -128,7 +101,6 @@ async function checkSlugRemote(docIdPub: string, slug: string) {
   const r = await getJSON(u.toString())
   return r.ok ? r.json : null
 }
-/* ----- TOC helper (article) ----- */
 async function fetchTocRemote(docIdPub: string) {
   const r = await getJSON(api(`ai/get-toc?docId=${encodeURIComponent(docIdPub)}`))
   return r.ok && r.json?.ok && Array.isArray(r.json.items) && r.json.items.length ? r.json.items : null
@@ -279,14 +251,37 @@ const aiGalleryAltsApply = (props: any) => ({
   },
 })
 
-/* ---------------- SLUG CHECK (product) ---------------- */
+/* ---------------- SLUG (product) ---------------- */
+const aiSlugGenerate = (props: any) => ({
+  name: 'aiSlugGenerate',
+  label: 'AI Slug (Generate)',
+  onHandle: async () => {
+    try {
+      const pub = toPub(pickId(props))
+      const name = pickName(props)
+      if (!pub) return alert('Cannot resolve document id')
+      if (!name) return alert('Document has no name/title to base slug on.')
+      const current = pickSlug(props)
+      if (current) {
+        const ok = confirm(`This document already has slug:\n"${current}"\n\nGenerate & overwrite it?`)
+        if (!ok) return
+      }
+      const res = await postJSON(api('ai/slug-generate'), { docId: pub, name })
+      if (!res.ok || !res.json?.ok) {
+        return alert(`Slug generate failed: ${res.status || res.error || res.json?.error || 'unknown'}`)
+      }
+      alert(`Slug generated:\n${res.json.slug}`)
+      props.onComplete?.()
+    } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
+  },
+})
 const aiSlugCheck = (props: any) => ({
   name: 'aiSlugCheck',
   label: 'Check Slug',
   onHandle: async () => {
     try {
       const pub = toPub(pickId(props))
-      const slug = props?.draft?.slug?.current || props?.published?.slug?.current || ''
+      const slug = pickSlug(props)
       if (!slug) return alert('No slug on document.')
       const res = await checkSlugRemote(pub, slug)
       if (!res?.ok) return alert('Slug check failed.')
@@ -300,7 +295,7 @@ const aiSlugCheck = (props: any) => ({
   },
 })
 
-/* ---------------- TOC (article) ---------------- */
+/* ---------------- TOC + ARTICLE SLUG ---------------- */
 const aiTocGenerate = (props: any) => ({
   name: 'aiTocGenerate',
   label: 'AI TOC (Generate)',
@@ -342,6 +337,33 @@ const aiTocApply = (props: any) => ({
   },
 })
 
+// ⬇️ NEW: Article → AI Slug (Generate)
+const aiArticleSlugGenerate = (props: any) => ({
+  name: 'aiArticleSlugGenerate',
+  label: 'AI Slug (Generate)',
+  onHandle: async () => {
+    try {
+      const pub = toPub(pickId(props))
+      const nameOrTitle = pickName(props)
+      if (!pub) return alert('Cannot resolve document id')
+      if (!nameOrTitle) return alert('Document has no title to base slug on.')
+
+      const current = pickSlug(props)
+      if (current) {
+        const ok = confirm(`This document already has slug:\n"${current}"\n\nGenerate & overwrite it?`)
+        if (!ok) return
+      }
+
+      const res = await postJSON(api('ai/slug-generate'), { docId: pub, name: nameOrTitle })
+      if (!res.ok || !res.json?.ok) {
+        return alert(`Slug generate failed: ${res.status || res.error || res.json?.error || 'unknown'}`)
+      }
+      alert(`Slug generated:\n${res.json.slug}`)
+      props.onComplete?.()
+    } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
+  },
+})
+
 /* ---------------- register ---------------- */
 export default definePlugin(() => ({
   name: 'ai-actions',
@@ -354,11 +376,15 @@ export default definePlugin(() => ({
           aiShortGenerate, aiShortApply,
           aiMainAltGenerate, aiMainAltApply,
           aiGalleryAltsGenerate, aiGalleryAltsApply,
+          aiSlugGenerate,
           aiSlugCheck,
         )
       }
       if (ctx.schemaType === 'article') {
-        return prev.concat(aiTocGenerate, aiTocApply)
+        return prev.concat(
+          aiTocGenerate, aiTocApply,
+          aiArticleSlugGenerate,   // ⬅️ เพิ่มปุ่ม slug สำหรับบทความ
+        )
       }
       return prev
     },
