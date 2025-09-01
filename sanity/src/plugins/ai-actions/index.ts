@@ -63,7 +63,7 @@ async function poll<T>(runner: () => Promise<T | null>, attempts = 8, delayMs = 
 function pickId(props: any) {
   return props?.id || props?.documentId || props?.draft?._id || props?.published?._id || ''
 }
-// ⬇️ อัปเดต: รองรับทั้ง product.name และ article.title
+// รองรับทั้ง product.name และ article.title
 function pickName(props: any) {
   return (
     props?.draft?.name || props?.published?.name ||
@@ -105,6 +105,11 @@ async function fetchTocRemote(docIdPub: string) {
   const r = await getJSON(api(`ai/get-toc?docId=${encodeURIComponent(docIdPub)}`))
   return r.ok && r.json?.ok && Array.isArray(r.json.items) && r.json.items.length ? r.json.items : null
 }
+// อ่าน preview FAQ จาก aiPreview.result.faq[]
+async function fetchFaqPreviewRemote(docIdPub: string) {
+  const r = await getJSON(api(`ai/get-faq?docId=${encodeURIComponent(docIdPub)}`))
+  return r.ok && r.json?.ok && Array.isArray(r.json.items) ? r.json.items : null
+}
 
 /* ---------------- badge ---------------- */
 const aiBadge = () => ({ label: 'AI', title: 'AI plugin active' })
@@ -141,7 +146,7 @@ const aiTitleApply = (props: any) => ({
       const idx = Math.max(0, Math.min(parseInt(ans, 10) - 1, titles.length - 1))
       const r = await postJSON(api('ai/apply-title'), { docId: pub, index: idx })
       alert(r.ok ? 'Applied' : `Apply failed: ${r.status || r.error || 'unknown'}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -176,7 +181,7 @@ const aiShortApply = (props: any) => ({
       if (!ok) return
       const r = await postJSON(api('ai/apply-short'), { docId: pub })
       alert(r.ok ? 'Applied' : `Apply failed: ${r.status || r.error || 'unknown'}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -211,7 +216,7 @@ const aiMainAltApply = (props: any) => ({
       if (!ok) return
       const r = await postJSON(api('ai/apply-image-alt'), { docId: pub })
       alert(r.ok ? 'Applied' : `Apply failed: ${r.status || r.error || 'unknown'}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -246,7 +251,7 @@ const aiGalleryAltsApply = (props: any) => ({
       if (!ok) return
       const r = await postJSON(api('ai/apply-gallery-alts'), { docId: pub })
       alert(r.ok ? 'Applied' : `Apply failed: ${r.status || r.error || 'unknown'}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -271,7 +276,7 @@ const aiSlugGenerate = (props: any) => ({
         return alert(`Slug generate failed: ${res.status || res.error || res.json?.error || 'unknown'}`)
       }
       alert(`Slug generated:\n${res.json.slug}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -308,7 +313,7 @@ const aiTocGenerate = (props: any) => ({
         data: { docId: pub, max: 8, meta: { userId: 'studio' } },
       })
       alert(r.ok ? 'TOC triggered' : `Trigger failed: ${r.status || r.error || 'unknown'}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
@@ -325,19 +330,19 @@ const aiTocApply = (props: any) => ({
       const ok = confirm(`Apply ${items.length} TOC items?\n\n${preview}`)
       if (!ok) return
       const res = await postJSON(api('ai/apply-toc'), { docId: pub })
-      if (res.ok) { alert('Applied'); props.onComplete?.(); return }
+      if (res.ok) { alert('Applied'); (props as any).onComplete?.(); return }
       const dbg = await getJSON(api(`ai/get-toc?docId=${encodeURIComponent(pub)}&debug=1`))
       if (dbg.ok && dbg.json?.ok) {
         alert(`Apply failed (${res.status || res.error || 'unknown'}).\nTOC still present (${dbg.json.count} items). Please click "Apply TOC…" again.`)
       } else {
         alert(`Apply failed (${res.status || res.error || 'unknown'}).\nAlso failed to read TOC (${dbg.error || dbg.status}). Try "AI TOC (Generate)" again.`)
       }
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
   },
 })
 
-// ⬇️ NEW: Article → AI Slug (Generate)
+// NEW: Article → AI Slug (Generate)
 const aiArticleSlugGenerate = (props: any) => ({
   name: 'aiArticleSlugGenerate',
   label: 'AI Slug (Generate)',
@@ -359,8 +364,91 @@ const aiArticleSlugGenerate = (props: any) => ({
         return alert(`Slug generate failed: ${res.status || res.error || res.json?.error || 'unknown'}`)
       }
       alert(`Slug generated:\n${res.json.slug}`)
-      props.onComplete?.()
+      ;(props as any).onComplete?.()
     } catch (e: any) { alert('Error: ' + (e?.message || String(e))) }
+  },
+})
+
+/* ---------------- NEW: Article → AI FAQ — Generate (single dialog) ---------------- */
+const aiFaqGenerate = (props: any) => ({
+  name: 'aiFaqGenerate',
+  label: 'AI FAQ — Generate',
+  onHandle: async () => {
+    try {
+      const pub = toPub(pickId(props))
+      if (!pub) return alert('Cannot resolve document id')
+
+      // กล่องเดียว: ใส่ "max, lang, tone" เช่น "5, th, concise"
+      const raw = prompt(
+        'FAQ settings: "max, lang, tone"\nExample: 5, th, concise',
+        '5, th, concise'
+      )
+      if (raw === null) return
+
+      const parts = raw.split(',').map(s => (s || '').trim())
+      let max = parseInt(parts[0] || '5', 10)
+      if (!Number.isFinite(max) || max < 1 || max > 10) max = 5
+
+      const langIn = (parts[1] || 'th').toLowerCase()
+      const lang = langIn.startsWith('en') ? 'en' : 'th'
+
+      const tone = (parts[2] || 'concise').trim() || 'concise'
+
+      const res = await postJSON(api('ai/trigger'), {
+        name: 'ai/article.faq_generate',
+        data: { docId: pub, max, meta: { userId: 'studio', lang, tone } },
+      })
+
+      if (!res.ok || !res.json?.ok) {
+        return alert(`Trigger failed: ${res.status || res.error || res.json?.message || 'unknown'}`)
+      }
+
+      alert(
+        `FAQ generation triggered ✅\n` +
+        `(${max} item(s), lang=${lang}, tone=${tone})\n` +
+        `รอสักครู่แล้วกด "AI FAQ — Apply"`
+      )
+
+      ;(props as any).onComplete?.()
+    } catch (e: any) {
+      alert('Error: ' + (e?.message || String(e)))
+    }
+  },
+})
+
+/* ---------------- NEW: Article → AI FAQ — Apply ---------------- */
+const aiFaqApply = (props: any) => ({
+  name: 'aiFaqApply',
+  label: 'AI FAQ — Apply',
+  onHandle: async () => {
+    try {
+      const pub = toPub(pickId(props))
+      if (!pub) return alert('Cannot resolve document id')
+
+      // อ่าน preview เพื่อแจ้งผู้ใช้ก่อน apply
+      const items = await fetchFaqPreviewRemote(pub)
+      if (!items || items.length === 0) {
+        return alert('No FAQ preview found. Please add or generate items in "AI Preview → Result → Generated FAQ" first.')
+      }
+
+      const preview = items
+        .map((x: any, i: number) => `${i + 1}) Q: ${x.question || ''}\n   A: ${x.answer || ''}`)
+        .join('\n\n')
+        .slice(0, 4000)
+
+      const ok = confirm(`Apply ${items.length} FAQ item(s) to field "faq"?\n\n${preview}`)
+      if (!ok) return
+
+      const res = await postJSON(api('ai/apply-faq'), { docId: pub })
+      if (!res.ok || !res.json?.ok) {
+        return alert(`Apply FAQ failed: ${res.status || res.error || res.json?.message || 'unknown'}`)
+      }
+
+      alert(`Applied FAQ: ${res.json.applied ?? 0} item(s)`)
+      ;(props as any).onComplete?.()
+    } catch (e: any) {
+      alert('Error: ' + (e?.message || String(e)))
+    }
   },
 })
 
@@ -383,7 +471,9 @@ export default definePlugin(() => ({
       if (ctx.schemaType === 'article') {
         return prev.concat(
           aiTocGenerate, aiTocApply,
-          aiArticleSlugGenerate,   // ⬅️ เพิ่มปุ่ม slug สำหรับบทความ
+          aiFaqGenerate,           // Generate ก่อน
+          aiFaqApply,              // แล้วค่อย Apply
+          aiArticleSlugGenerate,
         )
       }
       return prev
