@@ -187,7 +187,7 @@ export default defineType({
       type: 'array',
       of: [
         defineField({
-          name: 'faqItem',            // ⬅️ ตั้งชื่อชนิดชัดเจน
+          name: 'faqItem',
           title: 'FAQ Item',
           type: 'object',
           fields: [
@@ -279,7 +279,6 @@ export default defineType({
                 }),
               ],
             }),
-            // ⬇️ เพิ่มที่เก็บพรีวิว FAQ จาก AI
             defineField({
               name: 'faq',
               title: 'Generated FAQ',
@@ -292,6 +291,46 @@ export default defineType({
                     defineField({ name: 'answer', title: 'Answer', type: 'text' }),
                   ],
                   preview: { select: { title: 'question', subtitle: 'answer' } },
+                }),
+              ],
+            }),
+            // ⬇⬇⬇ Image ALTs (Preview) — แก้ให้ Items โชว์ ALT ชัด ๆ ⬇⬇⬇
+            defineField({
+              name: 'imageAlts',
+              title: 'Image ALTs (Preview)',
+              type: 'object',
+              options: { collapsible: true, collapsed: true },
+              fields: [
+                defineField({
+                  name: 'featured',
+                  title: 'Featured',
+                  type: 'object',
+                  fields: [defineField({ name: 'alt', title: 'ALT', type: 'text' })],
+                }),
+                defineField({
+                  name: 'body',
+                  title: 'Body Images',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'items',
+                      title: 'Items',
+                      type: 'array',
+                      of: [
+                        defineField({
+                          name: 'bodyAlt',
+                          title: 'Body Image ALT',
+                          type: 'object',
+                          fields: [
+                            defineField({ name: 'key', title: 'Block _key', type: 'string' }),
+                            defineField({ name: 'alt', title: 'ALT', type: 'text' }),
+                          ],
+                          // ⬇ เพิ่ม preview: แสดง ALT เป็น title และ _key เป็น subtitle
+                          preview: { select: { title: 'alt', subtitle: 'key' } },
+                        }),
+                      ],
+                    }),
+                  ],
                 }),
               ],
             }),

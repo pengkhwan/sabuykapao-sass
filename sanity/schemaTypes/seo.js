@@ -63,5 +63,13 @@ export default defineType({
       fieldset: 'advanced',
       initialValue: false,
     }),
+    defineField({
+      name: 'jsonLd',
+      title: 'JSON-LD Structured Data',
+      type: 'text',
+      fieldset: 'advanced',
+      description: 'JSON-LD structured data for rich snippets and search engine optimization',
+      rows: 10,
+    }),
   ],
 })

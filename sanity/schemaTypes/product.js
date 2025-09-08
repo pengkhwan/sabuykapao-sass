@@ -3,7 +3,14 @@ export default {
   title: 'Products',
   type: 'document',
   fields: [
-    { name: 'sku', title: 'SKU', type: 'string' },
+    { 
+      name: 'sku', 
+      title: 'SKU (Stock Keeping Unit)', 
+      type: 'string',
+      description: 'รหัสสินค้าที่ใช้ในการจัดการสต็อกและอ้างอิง',
+      validation: (Rule) => Rule.required().min(3).max(20).warning('SKU ควรยาว 3-20 ตัวอักษร'),
+      placeholder: 'เช่น BAG-001, WALLET-2024'
+    },
     { name: 'name', title: 'Name', type: 'string' },
     { name: 'shortDescription', title: 'Short Description', type: 'text', rows: 3 },
     {
