@@ -64,6 +64,41 @@ export default defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'canonicalUrl',
+      title: 'Canonical URL',
+      type: 'url',
+      fieldset: 'advanced',
+      description: 'URL ที่เป็น canonical version ของหน้านี้ (สำหรับจัดการ duplicate content)',
+    }),
+    defineField({
+      name: 'twitterCard',
+      title: 'Twitter Card Type',
+      type: 'string',
+      fieldset: 'social',
+      options: {
+        list: [
+          { title: 'Summary', value: 'summary' },
+          { title: 'Summary Large Image', value: 'summary_large_image' },
+          { title: 'App', value: 'app' },
+          { title: 'Player', value: 'player' },
+        ],
+        layout: 'dropdown',
+      },
+      initialValue: 'summary_large_image',
+      description: 'ประเภทของ Twitter Card ที่จะแสดงเมื่อแชร์ลิงก์',
+    }),
+    defineField({
+      name: 'twitterSite',
+      title: 'Twitter Site (@username)',
+      type: 'string',
+      fieldset: 'social',
+      description: 'Twitter username ของเว็บไซต์ (เช่น @sabuykapao)',
+      validation: (Rule) => Rule.regex(/^@?[a-zA-Z0-9_]+$/, {
+        name: 'twitter username',
+        invert: false,
+      }).warning('กรุณาใส่ Twitter username ที่ถูกต้อง (เช่น @sabuykapao)'),
+    }),
+    defineField({
       name: 'jsonLd',
       title: 'JSON-LD Structured Data',
       type: 'text',
