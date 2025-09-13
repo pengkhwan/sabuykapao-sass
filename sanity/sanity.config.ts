@@ -3,9 +3,6 @@ import {defineConfig} from 'sanity'
 import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
 
-// ปลั๊กอิน AI actions (ไฟล์ JS)
-import aiActions from './src/plugins/ai-actions/index.js'
-
 // schema หลัก
 import {schemaTypes} from './schemaTypes'
 
@@ -16,8 +13,7 @@ export default defineConfig({
   projectId: 'ik92gukm',
   dataset: 'production',
 
-  // เปิดปลั๊กอิน AI
-  plugins: [deskTool(), visionTool(), aiActions()],
+  plugins: [deskTool(), visionTool()],
 
   schema: {
     types: schemaTypes,

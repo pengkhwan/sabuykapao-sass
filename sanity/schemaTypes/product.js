@@ -67,39 +67,7 @@ export default {
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'category' }] }]
     },
-    { name: 'seo', title: 'SEO', type: 'seo' },
-    {
-      name: 'aiPreview',
-      title: 'AI Preview',
-      type: 'object',
-      readOnly: true,
-      hidden: true,
-      fields: [
-        { name: 'createdAt', title: 'Created At', type: 'datetime' },
-        { name: 'event', title: 'Event', type: 'string' },
-        { name: 'name', title: 'Name', type: 'string' },
-        {
-          name: 'meta',
-          title: 'Meta',
-          type: 'object',
-          fields: [{ name: 'userId', title: 'User ID', type: 'string' }]
-        },
-        {
-          name: 'result',
-          title: 'Result',
-          type: 'object',
-          readOnly: true,
-          fields: [
-            {
-              name: 'titles',
-              title: 'Titles',
-              type: 'array',
-              of: [{ type: 'string' }]
-            }
-          ]
-        }
-      ]
-    }
+    { name: 'seo', title: 'SEO', type: 'seo' }
   ],
   preview: {
     select: {
