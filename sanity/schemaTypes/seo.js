@@ -98,5 +98,13 @@ export default defineType({
         invert: false,
       }).warning('กรุณาใส่ Twitter username ที่ถูกต้อง (เช่น @sabuykapao)'),
     }),
+    defineField({
+      name: 'jsonLd',
+      title: 'JSON-LD Structured Data',
+      type: 'text',
+      fieldset: 'advanced',
+      description: 'JSON-LD structured data for rich snippets and search engine optimization',
+      rows: 10,
+    }),
   ],
 })
